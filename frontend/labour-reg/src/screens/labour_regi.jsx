@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
 import FormCard from "../components/FormCard";
 import { ensureMobileFocus } from "../utils/mobileFocus";
+import { useNavigate } from "react-router-dom";
 
 export default function LabourRegi() {
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,39 +14,40 @@ export default function LabourRegi() {
     const name = document.getElementById("name").value.trim();
     const dob = document.getElementById("dob").value.trim();
 
-
     if (!phone) {
       alert("Phone number required");
       document.getElementById("phone").focus();
       return;
     }
     if (!dob) {
-  alert("Date of birth is required");
-  document.getElementById("dob").focus();
-  return;
-}
+      alert("Date of birth is required");
+      document.getElementById("dob").focus();
+      return;
+    }
 
-// Validate age ≥ 18
-const birthDate = new Date(dob);
-const today = new Date();
-let age = today.getFullYear() - birthDate.getFullYear();
-const monthDiff = today.getMonth() - birthDate.getMonth();
-if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-  age--;
-}
+    // Validate age ≥ 18
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
 
-if (isNaN(age)) {
-  alert("Please select a valid date of birth");
-  document.getElementById("dob").focus();
-  return;
-}
+    if (isNaN(age)) {
+      alert("Please select a valid date of birth");
+      document.getElementById("dob").focus();
+      return;
+    }
 
-if (age < 18) {
-  alert("You must be at least 18 years old to register");
-  document.getElementById("dob").focus();
-  return;
-}
-
+    if (age < 18) {
+      alert("You must be at least 18 years old to register");
+      document.getElementById("dob").focus();
+      return;
+    }
 
     console.log({ phone, email, name, dob });
     alert("Form logged — backend connection coming next.");
@@ -54,7 +57,6 @@ if (age < 18) {
     <div className="page-root">
       <FormCard title="Registration for labour">
         <form ref={formRef} className="form" onSubmit={handleSubmit}>
-
           <label className="field">
             <span className="label-text">Name</span>
             <input
@@ -94,24 +96,31 @@ if (age < 18) {
             />
           </label>
 
-          
-
           <label className="field">
-  <span className="label-text">Date of Birth</span>
-  <input
-    id="dob"
-    name="dob"
-    type="date"
-    onFocus={ensureMobileFocus}
-    required
-    className="input"
-  />
-</label>
-
+            <span className="label-text">Date of Birth</span>
+            <input
+              id="dob"
+              name="dob"
+              type="date"
+              onFocus={ensureMobileFocus}
+              required
+              className="input"
+            />
+          </label>
 
           <button id="registerBtn" className="submit-btn" type="submit">
             Register
           </button>
+          <div className="login-redirect">
+            <span>Already registered?</span>
+            <button
+              type="button"
+              className="login-link"
+              onClick={() => navigate("/login")}
+            >
+              Login here
+            </button>
+          </div>
         </form>
 
         <style jsx>{`
@@ -161,6 +170,30 @@ if (age < 18) {
             font-size: 15px;
             cursor: pointer;
           }
+          .login-redirect {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #374151;
+          }
+
+          .login-link {
+            background: none;
+            border: none;
+            color: #2b6ef6;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+          }
+
+          .login-link:hover {
+            color: #1747c8;
+          }
+
           @media (max-width: 480px) {
             .page-root {
               padding-bottom: env(safe-area-inset-bottom, 24px);

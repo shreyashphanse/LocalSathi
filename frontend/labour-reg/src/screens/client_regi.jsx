@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
 import FormCard from "../components/FormCard";
 import { ensureMobileFocus } from "../utils/mobileFocus";
+import { useNavigate } from "react-router-dom";
 
 export default function ClientRegi() {
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,6 +140,16 @@ export default function ClientRegi() {
           <button id="registerBtn" className="submit-btn" type="submit">
             Register
           </button>
+          <div className="login-redirect">
+            <span>Already registered?</span>
+            <button
+              type="button"
+              className="login-link"
+              onClick={() => navigate("/login")}
+            >
+              Login here
+            </button>
+          </div>
         </form>
 
         <style jsx>{`
@@ -187,6 +199,30 @@ export default function ClientRegi() {
             font-size: 15px;
             cursor: pointer;
           }
+          .login-redirect {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #374151;
+          }
+
+          .login-link {
+            background: none;
+            border: none;
+            color: #2b6ef6;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+          }
+
+          .login-link:hover {
+            color: #1747c8;
+          }
+
           @media (max-width: 480px) {
             .page-root {
               padding-bottom: env(safe-area-inset-bottom, 24px);

@@ -19,7 +19,7 @@ export default function StartScreen() {
   };
 
   const handleLoginClick = () => {
-    alert("Login screen coming soon!");
+    navigate("/login");
   };
 
   return (
