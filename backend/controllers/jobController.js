@@ -122,9 +122,16 @@ export const getLabourStats = async (req, res) => {
 
 export const getJobs = async (req, res) => {
   try {
+    const userId = req.user._id;
+
     const { skill, from, to, expectedRate } = req.query;
 
-    let jobs = await Job.find({ status: "open" });
+    // ✅ Base Query (CRITICAL FIX)
+    let jobs = await Job.find({
+      status: "open",
+      createdBy: { $ne: userId }, // ❌ Hide own jobs
+      rejectedBy: { $ne: userId }, // ❌ Hide rejected jobs
+    });
 
     // ✅ Skill Filter
     if (skill) {
@@ -140,14 +147,14 @@ export const getJobs = async (req, res) => {
       );
     }
 
-    // ✅ SINGLE MAP 🔥🔥🔥
+    // ✅ SINGLE MAP 🔥
     jobs = jobs.map((job) => {
       const budgetCompatibility = getBudgetCompatibility(
         job.budget,
         Number(expectedRate),
       );
 
-      const clientScore = 70; // TEMPORARY 😏 (dynamic next)
+      const clientScore = 70; // TEMP (dynamic later)
 
       return {
         ...job._doc,
@@ -169,6 +176,47 @@ export const getJobs = async (req, res) => {
     res.json(jobs);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET ALL MY POSTED JOBS (ONLY OPEN)
+export const getMyPostedJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      createdBy: req.user._id,
+    }).sort({ createdAt: -1 });
+
+    res.json(jobs);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// ✅ GET ALL MY ACCEPTED JOBS (ONLY OPEN)
+export const getMyAcceptedJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      acceptedBy: req.user._id,
+      status: { $in: ["accepted", "in_progress"] },
+    }).sort({ createdAt: -1 });
+
+    res.json(jobs);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// ✅ GET ALL MY COMPLETED JOBS (ONLY OPEN)
+export const getMyCompletedJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      $or: [{ createdBy: req.user._id }, { acceptedBy: req.user._id }],
+      status: "completed",
+    }).sort({ createdAt: -1 });
+
+    res.json(jobs);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };
 

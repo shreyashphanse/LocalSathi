@@ -8,6 +8,9 @@ import {
   getLabourStats,
   getClientStats,
   rejectJob,
+  getMyPostedJobs,
+  getMyAcceptedJobs,
+  getMyCompletedJobs,
 } from "../controllers/jobController.js";
 
 import {
@@ -41,5 +44,14 @@ router.get("/labour-stats/:labourId", protect, labourOnly, getLabourStats);
 
 // ✅ CLIENT STATS → Any logged user (or restrict later)
 router.get("/client-stats/:clientId", protect, getClientStats);
+
+// ✅ GET ALL MY POSTED JOBS
+router.get("/my-posted", protect, getMyPostedJobs);
+
+// ✅ GET ALL MY ACCEPTED JOBS
+router.get("/my-accepted", protect, labourOnly, getMyAcceptedJobs);
+
+// ✅ GET ALL MY COMPLETED JOBS
+router.get("/my-completed", protect, getMyCompletedJobs);
 
 export default router;
