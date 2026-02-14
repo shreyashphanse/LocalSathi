@@ -1,6 +1,7 @@
 import Job from "../models/Job.js";
 import { isStationOverlap } from "../utils/stationUtils.js";
 import { getBudgetCompatibility } from "../utils/budgetUtils.js";
+import { calculateJobScore } from "../utils/rankingUtils.js";
 
 // ✅ CREATE JOB
 export const createJob = async (req, res) => {
@@ -33,28 +34,34 @@ export const getJobs = async (req, res) => {
 
     let jobs = await Job.find({ status: "open" });
 
-    // ✅ Skill Filter (case-insensitive)
+    // ✅ Skill Filter
     if (skill) {
       jobs = jobs.filter(
         (job) => job.skillRequired.toLowerCase() === skill.toLowerCase(),
       );
     }
 
-    // ✅ Station Overlap Filter
+    // ✅ Station Overlap
     if (from && to) {
       jobs = jobs.filter((job) =>
         isStationOverlap(job.stationRange.from, job.stationRange.to, from, to),
       );
     }
 
-    // ✅ Budget Compatibility Injection 🔥
+    // ✅ SINGLE MAP 🔥🔥🔥
     jobs = jobs.map((job) => ({
       ...job._doc,
+
       budgetCompatibility: getBudgetCompatibility(
         job.budget,
         Number(expectedRate),
       ),
+
+      score: calculateJobScore(job, Number(expectedRate)),
     }));
+
+    // ✅ SORT
+    jobs.sort((a, b) => b.score - a.score);
 
     res.json(jobs);
   } catch (error) {
@@ -108,6 +115,8 @@ export const completeJob = async (req, res) => {
 // ✅ CANCEL JOB
 export const cancelJob = async (req, res) => {
   try {
+    const { cancelledBy, reason } = req.body;
+
     const job = await Job.findById(req.params.id);
 
     if (!job) return res.status(404).json({ message: "Job not found" });
@@ -116,6 +125,11 @@ export const cancelJob = async (req, res) => {
       return res.status(400).json({ message: "Cannot cancel completed job" });
 
     job.status = "cancelled";
+
+    job.cancellation = {
+      cancelledBy,
+      reason,
+    };
 
     await job.save();
 

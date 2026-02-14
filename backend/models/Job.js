@@ -88,6 +88,18 @@ const jobSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    cancellation: {
+      cancelledBy: {
+        type: String,
+        enum: ["client", "labour", null],
+        default: null,
+      },
+
+      reason: {
+        type: String,
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,
