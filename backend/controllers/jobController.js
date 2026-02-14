@@ -2,6 +2,7 @@ import Job from "../models/Job.js";
 import { isStationOverlap } from "../utils/stationUtils.js";
 import { getBudgetCompatibility } from "../utils/budgetUtils.js";
 import { calculateJobScore } from "../utils/rankingUtils.js";
+import { calculateReliabilityScore } from "../utils/reliabilityUtils.js";
 
 // ✅ CREATE JOB
 export const createJob = async (req, res) => {
@@ -21,6 +22,70 @@ export const createJob = async (req, res) => {
     });
 
     res.status(201).json(job);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET CLIENT STATS
+
+export const getClientStats = async (req, res) => {
+  try {
+    const clientId = req.params.clientId;
+
+    const completedJobs = await Job.countDocuments({
+      clientId,
+      status: "completed",
+    });
+
+    const cancelledJobs = await Job.countDocuments({
+      clientId,
+      "cancellation.cancelledBy": "client",
+    });
+
+    const stats = {
+      completedJobs,
+      cancelledJobs,
+    };
+
+    const reliabilityScore = calculateReliabilityScore(stats);
+
+    res.json({
+      stats,
+      reliabilityScore,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET LABOUR STATS
+
+export const getLabourStats = async (req, res) => {
+  try {
+    const labourId = req.params.labourId;
+
+    const completedJobs = await Job.countDocuments({
+      labourId,
+      status: "completed",
+    });
+
+    const cancelledJobs = await Job.countDocuments({
+      labourId,
+      "cancellation.cancelledBy": "labour",
+    });
+
+    const stats = {
+      completedJobs,
+      cancelledJobs,
+    };
+
+    const reliabilityScore = calculateReliabilityScore(stats);
+
+    res.json({
+      stats,
+      reliabilityScore,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
