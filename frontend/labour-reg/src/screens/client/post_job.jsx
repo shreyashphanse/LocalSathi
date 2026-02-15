@@ -16,12 +16,25 @@ export default function PostJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { title, description, skillRequired, from, to, budget } = form;
+
+    if (!title.trim()) return alert("Title required");
+    if (!description.trim()) return alert("Description required");
+    if (!skillRequired.trim()) return alert("Skill required");
+    if (!from.trim()) return alert("From station required");
+    if (!to.trim()) return alert("To station required");
+    if (!budget) return alert("Budget required");
+
     try {
       setLoading(true);
 
       await api.post("/jobs/create", {
-        ...form,
-        budget: Number(form.budget),
+        title,
+        description,
+        skillRequired,
+        from,
+        to,
+        budget: Number(budget),
       });
 
       alert("Job posted successfully");
@@ -36,7 +49,7 @@ export default function PostJob() {
       });
     } catch (err) {
       console.error(err);
-      alert("Failed to post job");
+      alert("Job creation failed");
     } finally {
       setLoading(false);
     }
@@ -45,7 +58,7 @@ export default function PostJob() {
   return (
     <div className="post-root">
       <form className="post-card" onSubmit={handleSubmit}>
-        <h2>Post a Job</h2>
+        <h2>Post Job</h2>
 
         <input
           placeholder="Job Title"
@@ -54,7 +67,7 @@ export default function PostJob() {
         />
 
         <textarea
-          placeholder="Description"
+          placeholder="Job Description"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
@@ -65,7 +78,7 @@ export default function PostJob() {
           onChange={(e) => setForm({ ...form, skillRequired: e.target.value })}
         />
 
-        <div className="row">
+        <div className="stations">
           <input
             placeholder="From Station"
             value={form.from}
@@ -80,8 +93,8 @@ export default function PostJob() {
         </div>
 
         <input
-          placeholder="Budget"
           type="number"
+          placeholder="Budget"
           value={form.budget}
           onChange={(e) => setForm({ ...form, budget: e.target.value })}
         />
@@ -91,59 +104,71 @@ export default function PostJob() {
         </button>
       </form>
 
-      <style>{`
-
+      <style jsx>{`
         .post-root {
           min-height: 100vh;
           display: flex;
-          justify-content: center;
           align-items: center;
+          justify-content: center;
           background: #f0fdf4;
-          padding: 20px;
+          padding: 16px;
         }
 
         .post-card {
           width: 100%;
           max-width: 500px;
           background: white;
-          padding: 20px;
-          border-radius: 16px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          border-radius: 18px;
+          padding: 22px;
           display: flex;
           flex-direction: column;
           gap: 12px;
+          border: 1px solid rgba(16, 185, 129, 0.15);
         }
 
-        input, textarea {
+        h2 {
+          margin: 0 0 8px;
+          color: #065f46;
+        }
+
+        input,
+        textarea {
           height: 44px;
-          padding: 10px;
-          border-radius: 10px;
-          border: 1px solid rgba(15, 23, 42, 0.08);
+          border-radius: 12px;
+          border: 1px solid rgba(16, 185, 129, 0.25);
+          padding: 0 12px;
+          outline: none;
         }
 
         textarea {
           height: 80px;
+          padding-top: 10px;
+          resize: none;
         }
 
-        .row {
+        .stations {
           display: flex;
-          gap: 8px;
+          gap: 10px;
         }
 
         button {
           height: 44px;
+          border-radius: 12px;
           border: none;
-          border-radius: 10px;
           background: #10b981;
           color: white;
           font-weight: 600;
           cursor: pointer;
         }
 
-        button:disabled {
-          opacity: 0.6;
+        button:hover {
+          background: #059669;
         }
 
+        button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
       `}</style>
     </div>
   );

@@ -5,6 +5,8 @@ export default function MyPostedJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchJobs();
@@ -25,67 +27,112 @@ export default function MyPostedJobs() {
     }
   };
 
+  const handleCancel = async (jobId) => {
+    try {
+      setActionLoading(jobId);
+
+      await api.patch(`/jobs/${jobId}/cancel`, {
+        reason: "Cancelled by client",
+      });
+
+      setJobs(jobs.filter((job) => job._id !== jobId));
+    } catch (err) {
+      console.error(err);
+      alert("Cancellation failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const filteredJobs = jobs.filter((job) =>
+    `${job.title} ${job.skillRequired} ${job.description}`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
+
   if (loading) return <div className="state">Loading jobs...</div>;
+
   if (error) return <div className="state">{error}</div>;
 
-  if (jobs.length === 0)
-    return (
-      <div className="root">
-        <div className="job-card state-card">No jobs posted yet</div>
-      </div>
-    );
-
   return (
-    <div className="root">
+    <div className="feed-root">
       <div className="top-bar">
-        <h2>My Posted Jobs</h2>
-        <button onClick={fetchJobs}>↻</button>
+        <input
+          placeholder="Search my jobs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <button className="refresh-btn" onClick={fetchJobs}>
+          🔄
+        </button>
       </div>
 
-      {jobs.map((job) => (
-        <div key={job._id} className="job-card">
-          <div className="header">
-            <h3>{job.title}</h3>
-            <span className={`status ${job.status}`}>{job.status}</span>
+      {filteredJobs.length === 0 ? (
+        <div className="job-card empty">No jobs found</div>
+      ) : (
+        filteredJobs.map((job) => (
+          <div key={job._id} className="job-card">
+            <div className="job-header">
+              <h3>{job.title}</h3>
+              <span className={`status ${job.status}`}>{job.status}</span>
+            </div>
+
+            <p className="desc">{job.description}</p>
+
+            <div className="meta">
+              <div>
+                <b>Skill:</b> {job.skillRequired}
+              </div>
+              <div>
+                <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
+              </div>
+              <div>
+                <b>Budget:</b> ₹{job.budget}
+              </div>
+            </div>
+
+            {(job.status === "open" || job.status === "assigned") && (
+              <div className="actions">
+                <button
+                  onClick={() => handleCancel(job._id)}
+                  disabled={actionLoading === job._id}
+                >
+                  {actionLoading === job._id ? "Processing..." : "Cancel"}
+                </button>
+              </div>
+            )}
           </div>
+        ))
+      )}
 
-          <p className="desc">{job.description}</p>
-
-          <p>
-            <b>Skill:</b> {job.skillRequired}
-          </p>
-
-          <p>
-            <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
-          </p>
-
-          <p>
-            <b>Budget:</b> ₹{job.budget}
-          </p>
-        </div>
-      ))}
-
-      <style>{`
-
-        .root {
+      <style jsx>{`
+        .feed-root {
           min-height: 100vh;
-          background: #f0fdf4;
           padding: 16px;
-          max-width: 600px;
+          max-width: 900px;
           margin: auto;
         }
 
         .top-bar {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
+          gap: 10px;
           margin-bottom: 16px;
         }
 
-        .top-bar button {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+        .top-bar input {
+          flex: 1;
+          height: 44px;
+          border-radius: 14px;
+          border: 1px solid rgba(16, 185, 129, 0.25);
+          padding: 0 16px;
+          outline: none;
+        }
+
+        .refresh-btn {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
           border: none;
           background: #10b981;
           color: white;
@@ -93,45 +140,80 @@ export default function MyPostedJobs() {
           cursor: pointer;
         }
 
+        .refresh-btn:hover {
+          background: #059669;
+        }
+
         .job-card {
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          background: white;
           border-radius: 14px;
           padding: 16px;
           margin-bottom: 12px;
-          background: white;
-          box-shadow: 0 4px 10px rgba(16, 185, 129, 0.05);
+          border: 1px solid rgba(16, 185, 129, 0.15);
         }
 
-        .state-card {
-          text-align: center;
-          color: #047857;
-        }
-
-        .header {
+        .job-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
+        h3 {
+          margin: 0;
+          color: #065f46;
+        }
+
         .status {
-          font-size: 12px;
           padding: 4px 10px;
           border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
           background: #ecfdf5;
-          color: #059669;
+          color: #047857;
         }
 
         .desc {
-          color: #475569;
-          margin: 6px 0;
+          margin: 8px 0;
+          color: #374151;
+        }
+
+        .meta {
+          font-size: 14px;
+          color: #4b5563;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .actions {
+          margin-top: 12px;
+        }
+
+        .actions button {
+          width: 100%;
+          height: 40px;
+          border-radius: 10px;
+          border: none;
+          background: #e5e7eb;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .actions button:hover {
+          background: #ef4444;
+          color: white;
+        }
+
+        .empty {
+          text-align: center;
+          color: #6b7280;
+          font-weight: 600;
         }
 
         .state {
           padding: 40px;
           text-align: center;
-          color: #047857;
         }
-
       `}</style>
     </div>
   );
