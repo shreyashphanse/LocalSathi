@@ -190,7 +190,7 @@ export default function ClientRegi({ lang }) {
           </div>
         </form>
 
-        <style jsx>{`
+        <style>{`
           .page-root {
             min-height: 100vh;
             display: flex;

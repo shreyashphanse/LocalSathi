@@ -46,7 +46,7 @@ export default function StartScreen({ lang }) {
         )}
       </FormCard>
 
-      <style jsx>{`
+      <style>{`
         .page-root {
           min-height: 100vh;
           display: flex;

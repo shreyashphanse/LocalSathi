@@ -6,7 +6,7 @@ export default function FormCard({ title, children, logintitle }) {
       <h1 className="title">{title}</h1>
       <h1 className="logintitle">{logintitle}</h1>
       {children}
-      <style jsx>{`
+      <style>{`
         .card {
           width: 100%;
           max-width: 420px;

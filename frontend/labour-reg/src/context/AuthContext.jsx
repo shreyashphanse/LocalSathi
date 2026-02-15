@@ -12,20 +12,32 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    if (storedToken && storedUser && storedUser !== "undefined") {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.warn("Invalid stored user. Clearing storage.");
+        console.error(err);
+        localStorage.clear();
+      }
     }
 
     setLoading(false);
   }, []);
 
   const login = (data) => {
+    const userData = {
+      _id: data._id,
+      name: data.name,
+      role: data.role,
+    };
+
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("user", JSON.stringify(userData));
 
     setToken(data.token);
-    setUser(data.user);
+    setUser(userData);
   };
 
   const logout = () => {

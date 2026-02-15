@@ -45,7 +45,8 @@ export default function Login({ lang }) {
 
       login(data);
 
-      navigate("/jobs");
+      if (data.role === "client") navigate("/myposted");
+      else navigate("/jobs");
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert(err.response?.data?.message || "Login failed");
@@ -94,7 +95,7 @@ export default function Login({ lang }) {
           </button>
         </form>
 
-        <style jsx>{`
+        <style>{`
           :root {
             --g-bg: #f3f9f1;
             --g-muted: #647056;
