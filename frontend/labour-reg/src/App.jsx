@@ -13,6 +13,7 @@ import PostJob from "./screens/client/post_job";
 import MyPostedJobs from "./screens/client/my_posted_jobs";
 import MyAcceptedJobs from "./screens/labour/my_accepted_jobs";
 import MyCompletedJobs from "./screens/labour/my_completed_jobs";
+import Ratings from "./screens/common/ratings";
 
 import AdminLogin from "./screens/admin/admin_login";
 import AdminPanel from "./screens/admin/admin_panel";
@@ -169,6 +170,15 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["labour", "client"]}>
               <MyCompletedJobs />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/ratings/:id"
+          element={
+            <ProtectedRoute>
+              <Ratings />
             </ProtectedRoute>
           }
         />

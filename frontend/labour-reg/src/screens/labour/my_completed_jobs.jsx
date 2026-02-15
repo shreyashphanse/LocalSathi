@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 export default function MyCompletedJobs() {
+  const navigate = useNavigate();
+
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,6 +77,13 @@ export default function MyCompletedJobs() {
               <div>
                 <b>Budget:</b> ₹{job.budget}
               </div>
+            </div>
+
+            {/* ✅ ACTIONS 🔥 */}
+            <div className="actions">
+              <button onClick={() => navigate(`/ratings/${job._id}`)}>
+                Rate
+              </button>
             </div>
           </div>
         ))
@@ -161,6 +171,28 @@ export default function MyCompletedJobs() {
           display: flex;
           flex-direction: column;
           gap: 4px;
+        }
+
+        /* ✅ ACTIONS */
+
+        .actions {
+          margin-top: 12px;
+          display: flex;
+        }
+
+        .actions button {
+          width: 100%;
+          height: 40px;
+          border-radius: 10px;
+          border: none;
+          background: #e5e7eb;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .actions button:hover {
+          background: #10b981;
+          color: white;
         }
 
         .empty {
