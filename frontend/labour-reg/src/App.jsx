@@ -15,6 +15,12 @@ import MyAcceptedJobs from "./screens/labour/my_accepted_jobs";
 import MyCompletedJobs from "./screens/labour/my_completed_jobs";
 import Ratings from "./screens/common/ratings";
 import ClientDashboard from "./screens/client/client_dashboard";
+import LabourDashboard from "./screens/labour/labour_dashboard";
+import { useAuth } from "./hooks/useAuth";
+import ClientNavbar from "./components/ClientNavbar";
+import LabourNavbar from "./components/LabourNavbar";
+import ClientHome from "./screens/client/client_home";
+import LabourHome from "./screens/labour/labour_home";
 
 import AdminLogin from "./screens/admin/admin_login";
 import AdminPanel from "./screens/admin/admin_panel";
@@ -23,6 +29,7 @@ import RequireAdmin from "./components/RequireAdmin";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
+  const { user } = useAuth();
   const [lang, setLang] = useState("en");
   const [langOpen, setLangOpen] = useState(false);
 
@@ -124,6 +131,10 @@ export default function App() {
         )}
       </div>
 
+      {/* ✅ NAVBAR */}
+      {user?.role === "client" && <ClientNavbar />}
+      {user?.role === "labour" && <LabourNavbar />}
+
       <Routes>
         <Route path="/" element={<StartScreen lang={lang} />} />
         <Route path="/labour" element={<LabourRegi lang={lang} />} />
@@ -189,6 +200,24 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ClientDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/labourdashboard"
+          element={
+            <ProtectedRoute>
+              <LabourDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              {user?.role === "client" ? <ClientHome /> : <LabourHome />}
             </ProtectedRoute>
           }
         />

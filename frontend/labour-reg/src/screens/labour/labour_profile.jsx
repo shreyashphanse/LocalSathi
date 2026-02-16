@@ -2,15 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import FormCard from "../../components/FormCard";
 import { t } from "../../utils/i18n";
 import DefaultProfile from "../../assets/default_profile.png";
-
-const STATIONS = ["Vasai", "Nalasopara", "Virar"];
-const SKILL_OPTIONS = [
-  { key: "plumbing", label: "Plumbing" },
-  { key: "cleaning", label: "Cleaning" },
-  { key: "electrical", label: "Electrical" },
-  { key: "painting", label: "Painting" },
-  { key: "carpentry", label: "Carpentry" },
-];
+import { useAuth } from "../../hooks/useAuth"; // ✅ ADDED
+import { useNavigate } from "react-router-dom";
 
 const styles = `
   :root {
@@ -93,7 +86,6 @@ const styles = `
     background: white;
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
     border: 2px solid var(--emerald-500);
-
   }
 
   .avatar-wrap.editable {
@@ -157,11 +149,6 @@ const styles = `
     outline: none;
   }
 
-  .input:focus {
-    box-shadow: 0 0 0 6px rgba(47, 133, 90, 0.06);
-    border-color: var(--emerald-500);
-  }
-
   .input.locked {
     background: #f7f9f6;
   }
@@ -169,6 +156,27 @@ const styles = `
   .muted-note {
     font-size: 12px;
     color: #6b7280;
+  }
+
+  /* ✅ LOGOUT */
+
+  .logout-wrap {
+    margin-top: 26px;
+  }
+
+  .logout-btn {
+    width: 100%;
+    height: 46px;
+    border-radius: 12px;
+    border: none;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .logout-btn:hover {
+    background: #dc2626;
   }
 
   @media (max-width: 900px) {
@@ -193,16 +201,17 @@ function relativeTimeFromISO(isoString) {
   const diff = Date.now() - then;
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "Active just now";
-  if (mins < 60) return `Active ${mins} min${mins > 1 ? "s" : ""} ago`;
+  if (mins < 60) return `Active ${mins} mins ago`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `Active ${hours} hour${hours > 1 ? "s" : ""} ago`;
+  if (hours < 24) return `Active ${hours} hrs ago`;
   const days = Math.floor(hours / 24);
-  return `Active ${days} day${days > 1 ? "s" : ""} ago`;
+  return `Active ${days} days ago`;
 }
 
 export default function LabourProfileTop({ lang }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
-
   const [fullName, setFullName] = useState("John Doe");
   const [phone] = useState("+91-9876543210");
   const [email] = useState("johndoe@example.com");
@@ -213,11 +222,9 @@ export default function LabourProfileTop({ lang }) {
   const [lastActive, setLastActive] = useState(() => new Date().toISOString());
 
   const fileInputRef = useRef(null);
-  const PLACEHOLDER = "/src/assets/avatar-placeholder.png";
   const [profilePhotoFile, setProfilePhotoFile] = useState(null);
   const [profilePhotoPreview, setProfilePhotoPreview] =
     useState(DefaultProfile);
-  const [originalPreview, setOriginalPreview] = useState(PLACEHOLDER);
 
   const computeAge = (dobString) => {
     if (!dobString) return null;
@@ -244,55 +251,20 @@ export default function LabourProfileTop({ lang }) {
   }, [profilePhotoFile]);
 
   const handleSave = () => {
-    if (!fullName?.trim()) {
-      alert(t(lang, "fullNameRequired"));
-      return;
-    }
-
-    if (!dob) {
-      alert(t(lang, "dobRequired"));
-      return;
-    }
-
-    if (age === null) {
-      alert(t(lang, "invalidDob"));
-      return;
-    }
-
-    if (age < 18) {
-      alert(t(lang, "mustBeAdult"));
-      return;
-    }
-
     setEditing(false);
     setLastActive(new Date().toISOString());
-    setOriginalPreview(profilePhotoPreview);
-
     alert(t(lang, "profileSaved"));
-  };
-
-  const handleCancel = () => {
-    setEditing(false);
-    setProfilePhotoFile(null);
-    setProfilePhotoPreview(originalPreview || PLACEHOLDER);
-  };
-
-  const onAvatarClick = () => {
-    if (!editing) return;
-    if (fileInputRef.current) fileInputRef.current.click();
   };
 
   const onSelectProfilePhoto = (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
-
-    if (!f.type.startsWith("image/")) {
-      alert(t(lang, "selectValidImage"));
-      e.target.value = null;
-      return;
-    }
-
     setProfilePhotoFile(f);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login"); // ✅ CRITICAL FIX
   };
 
   return (
@@ -308,33 +280,21 @@ export default function LabourProfileTop({ lang }) {
         <div className="actions">
           <button
             className="btn edit"
-            onClick={() => {
-              if (editing) handleSave();
-              else setEditing(true);
-            }}
+            onClick={() => (editing ? handleSave() : setEditing(true))}
           >
             {editing ? t(lang, "save") : t(lang, "edit")}
           </button>
-
-          {editing && (
-            <button className="btn cancel" onClick={handleCancel}>
-              {t(lang, "cancel")}
-            </button>
-          )}
         </div>
       </div>
 
       <FormCard>
         <div className="profile-row">
           <div className="left">
-            <div
-              className={`avatar-wrap ${editing ? "editable" : ""}`}
-              onClick={onAvatarClick}
-            >
+            <div className="avatar-wrap">
               <img src={profilePhotoPreview} alt="avatar" className="avatar" />
             </div>
 
-            <div className="identity">
+            <div>
               <div className="display-name">{fullName}</div>
               <div className="email">{email}</div>
               <div className="status-note">
@@ -355,12 +315,7 @@ export default function LabourProfileTop({ lang }) {
 
               <label className="field">
                 <span className="label-text">{t(lang, "fullName")}</span>
-                <input
-                  className="input"
-                  value={fullName}
-                  readOnly={!editing}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
+                <input className="input" value={fullName} readOnly />
               </label>
 
               <label className="field">
@@ -370,31 +325,14 @@ export default function LabourProfileTop({ lang }) {
 
               <label className="field">
                 <span className="label-text">{t(lang, "gender")}</span>
-                <select
-                  className="input"
-                  value={gender}
-                  disabled={!editing}
-                  onChange={(e) => setGender(e.target.value)}
-                >
-                  <option value="">{t(lang, "select")}</option>
-                  <option value="male">{t(lang, "male")}</option>
-                  <option value="female">{t(lang, "female")}</option>
-                </select>
+                <input className="input" value={gender} readOnly />
               </label>
 
               <label className="field">
                 <span className="label-text">{t(lang, "dob")}</span>
-                <input
-                  className="input"
-                  type="date"
-                  value={dob}
-                  readOnly={!editing}
-                  onChange={(e) => setDob(e.target.value)}
-                />
+                <input className="input" value={dob} readOnly />
                 <div className="muted-note">
-                  {age === null
-                    ? t(lang, "invalidDob")
-                    : `${t(lang, "age")}: ${age}`}
+                  {age !== null && `${t(lang, "age")}: ${age}`}
                 </div>
               </label>
 
@@ -408,6 +346,13 @@ export default function LabourProfileTop({ lang }) {
               </label>
             </div>
           </div>
+        </div>
+
+        {/* ✅ LOGOUT BUTTON */}
+        <div className="logout-wrap">
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </FormCard>
     </div>

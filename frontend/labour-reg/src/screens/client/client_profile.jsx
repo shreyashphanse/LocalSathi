@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import FormCard from "../../components/FormCard";
 import { t } from "../../utils/i18n";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const styles = `
   :root {
@@ -170,6 +172,24 @@ const styles = `
     margin-top: 6px;
   }
 
+  /* ✅ LOGOUT */
+  .logout-btn {
+    margin-top: 18px;
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    background: #fee2e2;
+    color: #991b1b;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .logout-btn:hover {
+    background: #ef4444;
+    color: white;
+  }
+
   @media (max-width: 900px) {
     .profile-row {
       flex-direction: column;
@@ -186,21 +206,18 @@ const styles = `
 `;
 
 export default function ClientProfileTop({ lang }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const [editing, setEditing] = useState(false);
   const [originalData, setOriginalData] = useState(null);
 
   const [fullName, setFullName] = useState("Jane Client");
   const [phone] = useState("+91-9876543210");
-
-  // ✅ Email locked
   const [email] = useState("janec@example.com");
-
-  // ✅ New compulsory address
   const [address, setAddress] = useState("");
-
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("1998-05-10");
-
   const [verificationStatus] = useState("unverified");
 
   const [tcConsented, setTcConsented] = useState(false);
@@ -238,6 +255,11 @@ export default function ClientProfileTop({ lang }) {
     setProfilePhotoPreview(originalData.profilePhotoPreview);
 
     setEditing(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   const onAvatarClick = () => {
@@ -288,7 +310,7 @@ export default function ClientProfileTop({ lang }) {
           </button>
 
           {editing && (
-            <button className="btn cancel" onClick={() => handleCancel()}>
+            <button className="btn cancel" onClick={handleCancel}>
               {t(lang, "cancel")}
             </button>
           )}
@@ -339,13 +361,6 @@ export default function ClientProfileTop({ lang }) {
                 <input value={phone} readOnly className="input locked" />
               </label>
 
-              {/* ✅ Locked Email */}
-              <label className="field">
-                <span className="label-text">{t(lang, "email")}</span>
-                <input value={email} readOnly className="input locked" />
-              </label>
-
-              {/* ✅ Primary Address */}
               <label className="field">
                 <span className="label-text">{t(lang, "primaryAddress")}</span>
                 <input
@@ -381,7 +396,6 @@ export default function ClientProfileTop({ lang }) {
                 />
               </label>
 
-              {/* TERMS */}
               <div className="field">
                 <div className="tc-row">
                   <input
@@ -402,6 +416,11 @@ export default function ClientProfileTop({ lang }) {
                 </div>
               </div>
             </div>
+
+            {/* ✅ LOGOUT INSIDE CARD */}
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         </div>
       </FormCard>

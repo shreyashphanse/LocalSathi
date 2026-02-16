@@ -44,9 +44,7 @@ export default function Login({ lang }) {
       });
 
       login(data);
-
-      if (data.role === "client") navigate("/myposted");
-      else navigate("/jobs");
+      navigate("/home");
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert(err.response?.data?.message || "Login failed");

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 
-export default function ClientDashboard() {
+export default function LabourDashboard() {
   const [stats, setStats] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,17 +18,11 @@ export default function ClientDashboard() {
     try {
       setLoading(true);
 
-      const statsRes = await api.get("/jobs/dashboard/client");
-      const jobsRes = await api.get("/jobs/my-posted");
+      const statsRes = await api.get("/jobs/dashboard/labour");
+      const jobsRes = await api.get("/jobs/my-accepted");
 
       setStats(statsRes.data);
-
-      // ✅ FILTER ONLY OPEN JOBS 🔥
-      const openJobs = jobsRes.data
-        .filter((job) => job.status === "open")
-        .slice(0, 3);
-
-      setJobs(openJobs);
+      setJobs(jobsRes.data.slice(0, 3)); // ✅ Latest 3
     } catch (err) {
       console.error(err);
       setError("Failed to load dashboard");
@@ -45,10 +39,11 @@ export default function ClientDashboard() {
       <div className="dash-card">
         <h2>Dashboard</h2>
 
+        {/* ✅ STATS */}
         <div className="stats-grid">
           <div className="stat-box">
-            <span>Total Jobs Posted</span>
-            <b>{stats.totalJobs}</b>
+            <span>Accepted Jobs</span>
+            <b>{stats.acceptedJobs}</b>
           </div>
 
           <div className="stat-box">
@@ -65,31 +60,40 @@ export default function ClientDashboard() {
             <span>Cancelled</span>
             <b>{stats.cancelledJobs}</b>
           </div>
+
+          <div className="stat-box earnings">
+            <span>Total Earnings</span>
+            <b>₹{stats.totalEarnings}</b>
+          </div>
         </div>
 
+        {/* ✅ REFRESH */}
         <button onClick={fetchData}>🔄 Refresh</button>
 
-        {/* ✅ OPEN JOBS ONLY */}
+        {/* ✅ ACTIVE JOBS PREVIEW */}
+        <div className="jobs-section">
+          <h3>Latest Active Jobs</h3>
 
-        {jobs.length === 0 ? (
-          <div className="empty-card">
-            <button onClick={() => navigate("/postjob")}>Post New Job</button>
-          </div>
-        ) : (
-          jobs.map((job) => (
-            <div key={job._id} className="job-card">
-              <h3>{job.title}</h3>
-              <p>{job.description}</p>
+          {jobs.length === 0 ? (
+            <div className="empty-card">
+              <button onClick={() => navigate("/jobs")}>Find Jobs</button>
             </div>
-          ))
-        )}
+          ) : (
+            jobs.map((job) => (
+              <div key={job._id} className="job-card">
+                <h4>{job.title}</h4>
+                <p>{job.description}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       <style jsx>{`
         .dash-root {
           min-height: 100vh;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
           background: #f0fdf4;
           padding: 16px;
@@ -109,6 +113,12 @@ export default function ClientDashboard() {
           margin: 0 0 16px;
           color: #065f46;
           text-align: center;
+        }
+
+        h3 {
+          margin: 18px 0 10px;
+          color: #065f46;
+          font-size: 16px;
         }
 
         .stats-grid {
@@ -137,19 +147,14 @@ export default function ClientDashboard() {
           color: #065f46;
         }
 
-        .job-card {
-          background: #ecfdf5;
-          border-radius: 14px;
-          padding: 12px;
-          margin-top: 10px;
+        .earnings {
+          grid-column: span 2;
+          background: #10b981;
         }
 
-        .empty-card {
-          margin-top: 14px;
-          background: #ecfdf5;
-          padding: 14px;
-          border-radius: 14px;
-          text-align: center;
+        .earnings span,
+        .earnings b {
+          color: white;
         }
 
         button {
@@ -165,6 +170,37 @@ export default function ClientDashboard() {
 
         button:hover {
           background: #059669;
+        }
+
+        .jobs-section {
+          margin-top: 10px;
+        }
+
+        .job-card {
+          background: #f9fafb;
+          border-radius: 14px;
+          padding: 12px;
+          margin-bottom: 10px;
+          border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .job-card h4 {
+          margin: 0;
+          color: #065f46;
+          font-size: 15px;
+        }
+
+        .job-card p {
+          margin: 6px 0 0;
+          font-size: 13px;
+          color: #374151;
+        }
+
+        .empty-card {
+          background: #f9fafb;
+          padding: 16px;
+          border-radius: 14px;
+          text-align: center;
         }
 
         .state {
