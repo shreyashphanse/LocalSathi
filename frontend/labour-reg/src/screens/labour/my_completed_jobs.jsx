@@ -9,6 +9,7 @@ export default function MyCompletedJobs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchJobs();
@@ -26,6 +27,47 @@ export default function MyCompletedJobs() {
       setError("Failed to load completed jobs");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const confirmPayment = async (paymentId) => {
+    try {
+      setActionLoading(paymentId);
+
+      await api.patch(`/payments/${paymentId}/confirm`);
+
+      alert("Payment verified");
+
+      fetchJobs();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Confirmation failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const disputePayment = async (paymentId) => {
+    try {
+      const reason = prompt("Enter dispute reason:");
+
+      if (!reason || reason.length < 10) {
+        alert("Reason must be at least 10 characters");
+        return;
+      }
+
+      setActionLoading(paymentId);
+
+      await api.patch(`/payments/${paymentId}/dispute`, { reason });
+
+      alert("Payment disputed");
+
+      fetchJobs();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Dispute failed");
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -85,6 +127,28 @@ export default function MyCompletedJobs() {
                 Rate
               </button>
             </div>
+
+            {/* ✅ PAYMENT CONFIRMATION */}
+            {job.paymentStatus === "pending_confirmation" && (
+              <div className="actions dual">
+                <button
+                  onClick={() => confirmPayment(job.paymentId)}
+                  disabled={actionLoading === job.paymentId}
+                >
+                  {actionLoading === job.paymentId
+                    ? "Processing..."
+                    : "Confirm Payment"}
+                </button>
+
+                <button
+                  className="dispute"
+                  onClick={() => disputePayment(job.paymentId)}
+                  disabled={actionLoading === job.paymentId}
+                >
+                  Raise Dispute
+                </button>
+              </div>
+            )}
           </div>
         ))
       )}
@@ -178,6 +242,15 @@ export default function MyCompletedJobs() {
         .actions {
           margin-top: 12px;
           display: flex;
+        }
+
+        .dual {
+          gap: 10px;
+        }
+
+        .dispute:hover {
+          background: #f59e0b;
+          color: white;
         }
 
         .actions button {

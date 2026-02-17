@@ -8,8 +8,8 @@ export default function FormCard({ title, children, logintitle }) {
       {children}
       <style>{`
         .card {
-          width: 100%;
-          max-width: 420px;
+          width: 95%;
+          max-width: 100%;
           background: #fff;
           border-radius: 12px;
           padding: 28px;

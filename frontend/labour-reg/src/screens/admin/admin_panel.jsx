@@ -14,8 +14,28 @@ export default function AdminPanel({ lang }) {
   const [roleFilter, setRoleFilter] = useState("all");
   const [verifyFilter, setVerifyFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [userSort, setUserSort] = useState("newest");
+  const [jobSort, setJobSort] = useState("newest");
 
   const [loading, setLoading] = useState(true);
+  const [confirmModal, setConfirmModal] = useState(null);
+  const openConfirm = (title, message, onConfirm) => {
+    setConfirmModal({ title, message, onConfirm });
+  };
+
+  const closeConfirm = () => {
+    setConfirmModal(null);
+  };
+
+  /*
+confirmModal = {
+   title,
+   message,
+   onConfirm
+}
+*/
 
   const updateVerification = async (id, action) => {
     const oldUsers = users;
@@ -55,6 +75,14 @@ export default function AdminPanel({ lang }) {
       setUsers(oldUsers);
     }
   };
+  // const fetchMetrics = async () => {
+  //   try {
+  //     const res = await axios.get("/api/admin/metrics");
+  //     setMetrics(res.data);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   useEffect(() => {
     fetchDashboard();
@@ -84,7 +112,7 @@ export default function AdminPanel({ lang }) {
 
   /* ✅ FIXED LOGIC */
   const filteredUsers = useMemo(() => {
-    return users.filter((u) => {
+    let result = users.filter((u) => {
       const matchesSearch = `${u.name} ${u.phone}`
         .toLowerCase()
         .includes(query.toLowerCase());
@@ -100,13 +128,40 @@ export default function AdminPanel({ lang }) {
 
       return matchesSearch && matchesRole && matchesVerify;
     });
-  }, [users, query, roleFilter, verifyFilter]);
+
+    if (userSort === "score_low")
+      result.sort((a, b) => a.reliabilityScore - b.reliabilityScore);
+
+    if (userSort === "score_high")
+      result.sort((a, b) => b.reliabilityScore - a.reliabilityScore);
+
+    if (userSort === "verified")
+      result.sort((a, b) =>
+        a.verificationStatus.localeCompare(b.verificationStatus),
+      );
+
+    if (userSort === "newest")
+      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    return result;
+  }, [users, query, roleFilter, verifyFilter, userSort]);
 
   const filteredJobs = useMemo(() => {
-    return jobs.filter((j) =>
+    let result = jobs.filter((j) =>
       `${j.title} ${j.client}`.toLowerCase().includes(query.toLowerCase()),
     );
-  }, [jobs, query]);
+
+    if (jobSort === "budget_low")
+      result.sort((a, b) => a.offeredPrice - b.offeredPrice);
+
+    if (jobSort === "budget_high")
+      result.sort((a, b) => b.offeredPrice - a.offeredPrice);
+
+    if (jobSort === "newest")
+      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    return result;
+  }, [jobs, query, jobSort]);
 
   const toggleBan = async (id) => {
     setUsers((prev) =>
@@ -147,9 +202,29 @@ export default function AdminPanel({ lang }) {
     }
   };
 
-  const resolveDispute = async (id) => {
+  const resolveDispute = async (id, decisionAgainst) => {
     try {
-      await axios.patch(`/api/admin/disputes/${id}/resolve`);
+      const note = prompt("Resolution note:");
+
+      await axios.patch(`/api/admin/disputes/${id}/resolve`, {
+        adminNote: note,
+        decisionAgainst,
+      });
+
+      fetchDashboard();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const rejectDispute = async (id) => {
+    try {
+      const note = prompt("Rejection reason:");
+
+      await axios.patch(`/api/admin/disputes/${id}/reject`, {
+        adminNote: note,
+      });
+
       fetchDashboard();
     } catch (err) {
       console.error(err);
@@ -227,6 +302,26 @@ export default function AdminPanel({ lang }) {
             <option value="verified">Verified</option>
             <option value="unverified">Unverified</option>
           </select>
+          <select
+            value={userSort}
+            onChange={(e) => setUserSort(e.target.value)}
+            style={styles.input}
+          >
+            <option value="newest">Newest Users</option>
+            <option value="score_low">Low Score First</option>
+            <option value="score_high">High Score First</option>
+            <option value="verified">Verification Order</option>
+          </select>
+
+          <select
+            value={jobSort}
+            onChange={(e) => setJobSort(e.target.value)}
+            style={styles.input}
+          >
+            <option value="newest">Newest Jobs</option>
+            <option value="budget_low">Low Budget First</option>
+            <option value="budget_high">High Budget First</option>
+          </select>
         </aside>
 
         <main style={styles.main}>
@@ -235,46 +330,94 @@ export default function AdminPanel({ lang }) {
               {t(lang, "users")} ({filteredUsers.length})
             </h3>
 
-            {filteredUsers.map((u) => (
-              <div key={u._id} style={styles.row}>
-                <div>
-                  <strong>{u.name}</strong>
-                  <div style={{ fontSize: 12 }}>{u.phone}</div>
+            {filteredUsers.map((u) => {
+              return (
+                <div key={u._id} style={styles.row}>
+                  <div>
+                    <strong>{u.name}</strong>
+                    <div style={{ fontSize: 12 }}>{u.phone}</div>
+
+                    <div
+                      style={{
+                        ...styles.statusText,
+                        ...(u.verificationStatus === "unverified"
+                          ? styles.statusDanger
+                          : u.verificationStatus === "basic_verified"
+                            ? styles.statusWarning
+                            : styles.statusSuccess),
+                      }}
+                    >
+                      {u.verificationStatus}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color:
+                          u.riskLevel === "dangerous"
+                            ? "#dc2626"
+                            : u.riskLevel === "risky"
+                              ? "#b45309"
+                              : "#16a34a",
+                      }}
+                    >
+                      Risk: {u.riskLevel}
+                    </div>
+                  </div>
+
+                  <div style={styles.actions}>
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() => setSelectedUser(u)}
+                    >
+                      {t(lang, "view")}
+                    </button>
+
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() => updateVerification(u._id, "promote")}
+                    >
+                      Promote
+                    </button>
+
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() => updateVerification(u._id, "demote")}
+                    >
+                      Demote
+                    </button>
+
+                    <button
+                      style={styles.smallBtnDanger}
+                      onClick={() =>
+                        openConfirm(
+                          "Reset Verification",
+                          "User will become unverified.",
+                          () => updateVerification(u._id, "reset"),
+                        )
+                      }
+                    >
+                      Reset
+                    </button>
+
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() =>
+                        openConfirm(
+                          u.banned ? "Unban User" : "Ban User",
+                          u.banned
+                            ? "Restore account access?"
+                            : "User will lose system access.",
+                          () => toggleBan(u._id),
+                        )
+                      }
+                    >
+                      {u.banned ? t(lang, "unban") : t(lang, "ban")}
+                    </button>
+                  </div>
                 </div>
-
-                <div style={styles.actions}>
-                  <button style={styles.smallBtn}>{t(lang, "view")}</button>
-
-                  <button
-                    style={styles.smallBtn}
-                    onClick={() => updateVerification(u._id, "promote")}
-                  >
-                    Promote
-                  </button>
-
-                  <button
-                    style={styles.smallBtn}
-                    onClick={() => updateVerification(u._id, "demote")}
-                  >
-                    Demote
-                  </button>
-
-                  <button
-                    style={styles.smallBtnDanger}
-                    onClick={() => updateVerification(u._id, "reset")}
-                  >
-                    Reset
-                  </button>
-
-                  <button
-                    style={styles.smallBtn}
-                    onClick={() => toggleBan(u._id)}
-                  >
-                    {u.banned ? t(lang, "unban") : t(lang, "ban")}
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
 
           <section>
@@ -282,53 +425,258 @@ export default function AdminPanel({ lang }) {
               {t(lang, "jobs")} ({filteredJobs.length})
             </h3>
 
-            {filteredJobs.map((j) => (
-              <div key={j._id} style={styles.row}>
-                <div>
-                  <strong>{j.title}</strong>
-                  <div style={{ fontSize: 12 }}>{j.client}</div>
+            {filteredJobs.map((j) => {
+              return (
+                <div key={j._id} style={styles.row}>
+                  <div>
+                    <strong>{j.title}</strong>
+                    <div style={{ fontSize: 12 }}>{j.client}</div>
+
+                    <div
+                      style={{
+                        ...styles.statusText,
+                        ...(j.status === "cancelled"
+                          ? styles.statusDanger
+                          : j.status === "completed"
+                            ? styles.statusSuccess
+                            : styles.statusWarning),
+                      }}
+                    >
+                      {j.status}
+                    </div>
+                  </div>
+
+                  <div style={styles.actions}>
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() => setSelectedJob(j)}
+                    >
+                      {t(lang, "view")}
+                    </button>
+
+                    <button
+                      style={styles.smallBtn}
+                      onClick={() =>
+                        openConfirm(
+                          "Cancel Job",
+                          "Force cancel this job?",
+                          () => forceCancel(j._id),
+                        )
+                      }
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      style={styles.smallBtnDanger}
+                      onClick={() =>
+                        openConfirm(
+                          "Delete Job",
+                          "This action cannot be undone.",
+                          () => deleteJob(j._id),
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-
-                <div style={styles.actions}>
-                  <button style={styles.smallBtn}>{t(lang, "view")}</button>
-
-                  <button
-                    style={styles.smallBtn}
-                    onClick={() => forceCancel(j._id)}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    style={styles.smallBtnDanger}
-                    onClick={() => deleteJob(j._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
 
           <section>
-            <h3>{t(lang, "disputes")}</h3>
+            <h3>
+              {t(lang, "disputes")} ({disputes.length})
+            </h3>
 
-            {disputes.map((d) => (
-              <div key={d._id} style={styles.row}>
-                <div>{d.text}</div>
+            {[...disputes]
+              .sort((a, b) => {
+                const order = { high: 3, medium: 2, low: 1 };
+                return order[b.severity] - order[a.severity];
+              })
+              .map((d) => (
+                <div key={d._id} style={styles.disputeRow}>
+                  <div style={{ flex: 1 }}>
+                    <strong>{d.job?.title || "Unknown Job"}</strong>
 
-                <button
-                  style={styles.smallBtn}
-                  onClick={() => resolveDispute(d._id)}
-                  disabled={d.resolved}
-                >
-                  {d.resolved ? t(lang, "resolved") : t(lang, "resolve")}
-                </button>
-              </div>
-            ))}
+                    <div style={{ fontSize: 12, color: "#666" }}>
+                      {d.raisedBy?.name} → {d.against?.name}
+                    </div>
+
+                    <div style={{ marginTop: 4 }}>{d.text}</div>
+
+                    <div
+                      style={{
+                        ...styles.statusText,
+                        ...(d.severity === "high"
+                          ? styles.statusDanger
+                          : d.severity === "medium"
+                            ? styles.statusWarning
+                            : styles.statusSuccess),
+                      }}
+                    >
+                      {d.status} • {d.severity}
+                    </div>
+
+                    {d.adminNote && (
+                      <div style={styles.adminNote}>
+                        Admin Note: {d.adminNote}
+                      </div>
+                    )}
+                  </div>
+
+                  {d.status === "pending" && (
+                    <div style={styles.actions}>
+                      <button
+                        style={styles.smallBtn}
+                        onClick={() => {
+                          const loser = prompt(
+                            `Who loses?\n1 = ${d.raisedBy?.name}\n2 = ${d.against?.name}`,
+                          );
+
+                          const decisionAgainst =
+                            loser === "1" ? d.raisedBy._id : d.against._id;
+
+                          resolveDispute(d._id, decisionAgainst);
+                        }}
+                      >
+                        Resolve
+                      </button>
+
+                      <button
+                        style={styles.smallBtnDanger}
+                        onClick={() => rejectDispute(d._id)}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
           </section>
         </main>
       </div>
+      {confirmModal && (
+        <div style={styles.modalBack}>
+          <div style={styles.modal}>
+            <h3>{confirmModal.title}</h3>
+
+            <p style={{ color: "#555" }}>{confirmModal.message}</p>
+
+            <div style={styles.modalActions}>
+              <button style={styles.smallBtn} onClick={closeConfirm}>
+                Cancel
+              </button>
+
+              <button
+                style={styles.smallBtnDanger}
+                onClick={() => {
+                  confirmModal.onConfirm();
+                  closeConfirm();
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedUser && (
+        <div style={styles.modalBack}>
+          <div style={styles.modal}>
+            <h3>User Details</h3>
+
+            <div style={styles.detailsGrid}>
+              <div>
+                <strong>Name:</strong> {selectedUser.name}
+              </div>
+              <div>
+                <strong>Phone:</strong> {selectedUser.phone}
+              </div>
+
+              <div>
+                <strong>Role:</strong> {selectedUser.role}
+              </div>
+              <div>
+                <strong>Status:</strong> {selectedUser.verificationStatus}
+              </div>
+              <div>
+                <strong>Reliability:</strong> {selectedUser.reliabilityScore}
+              </div>
+              <div>
+                <strong>Station Range:</strong>{" "}
+                {selectedUser.stationRange?.start &&
+                selectedUser.stationRange?.end
+                  ? `${selectedUser.stationRange.start} → ${selectedUser.stationRange.end}`
+                  : "Not Provided"}
+              </div>
+              <div>
+                <strong>Skills:</strong>{" "}
+                {selectedUser.skills?.length
+                  ? selectedUser.skills.join(", ")
+                  : "None"}
+              </div>
+              <div>
+                <strong>Banned:</strong> {selectedUser.banned ? "Yes" : "No"}
+              </div>
+            </div>
+
+            <div style={styles.modalActions}>
+              <button
+                style={styles.smallBtn}
+                onClick={() => setSelectedUser(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedJob && (
+        <div style={styles.modalBack}>
+          <div style={styles.modal}>
+            <h3>Job Details</h3>
+
+            <div style={styles.detailsGrid}>
+              <div>
+                <strong>Title:</strong> {selectedJob.title}
+              </div>
+              <div>
+                <strong>Client:</strong> {selectedJob.client}
+              </div>
+              <div>
+                <strong>Labour:</strong> {selectedJob.labour || "Unassigned"}
+              </div>
+              <div>
+                <strong>Status:</strong> {selectedJob.status}
+              </div>
+              <div>
+                <strong>Budget:</strong> ₹{selectedJob.offeredPrice}
+              </div>
+              <div>
+                <strong>Skill:</strong> {selectedJob.skill}
+              </div>
+              <div>
+                <strong>Station:</strong> {selectedJob.stationRange?.start} →{" "}
+                {selectedJob.stationRange?.end}
+              </div>
+              <div>
+                <strong>Accepted:</strong> {selectedJob.accepted ? "Yes" : "No"}
+              </div>
+            </div>
+
+            <div style={styles.modalActions}>
+              <button
+                style={styles.smallBtn}
+                onClick={() => setSelectedJob(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -393,5 +741,72 @@ const styles = {
     boxSizing: "border-box",
     fontSize: 14,
     marginTop: 10,
+  },
+  modalBack: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.65)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modal: {
+    width: 420,
+    background: "#fff",
+    padding: 20,
+    borderRadius: 10,
+  },
+
+  modalActions: {
+    display: "flex",
+    gap: 10,
+    marginTop: 20,
+    justifyContent: "flex-end",
+  },
+  detailsGrid: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    marginTop: 12,
+    fontSize: 14,
+  },
+  statusText: {
+    marginTop: 4,
+    fontSize: 12,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+
+  statusDanger: {
+    color: "#dc2626", // red
+  },
+
+  statusWarning: {
+    color: "#b45309", // yellow-greenish tone
+  },
+
+  statusSuccess: {
+    color: "#16a34a", // green
+  },
+
+  disputeRow: {
+    display: "flex",
+    gap: 10,
+    padding: 12,
+    border: "1px solid #eee",
+    borderRadius: 8,
+    marginBottom: 10,
+    alignItems: "center",
+  },
+
+  adminNote: {
+    marginTop: 6,
+    fontSize: 12,
+    background: "#f9fafb",
+    padding: 6,
+    borderRadius: 6,
+    color: "#444",
   },
 };

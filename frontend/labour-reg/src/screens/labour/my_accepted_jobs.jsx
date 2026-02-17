@@ -7,6 +7,16 @@ export default function MyAcceptedJobs() {
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
   const [search, setSearch] = useState("");
+  const [disputeText, setDisputeText] = useState({});
+  const [evidenceFile, setEvidenceFile] = useState({});
+
+  const updateDisputeText = (jobId, value) => {
+    setDisputeText((prev) => ({ ...prev, [jobId]: value }));
+  };
+
+  const updateEvidenceFile = (jobId, file) => {
+    setEvidenceFile((prev) => ({ ...prev, [jobId]: file }));
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -35,7 +45,7 @@ export default function MyAcceptedJobs() {
 
       await api.patch(`/jobs/${jobId}/complete`);
 
-      setJobs(jobs.filter((job) => job._id !== jobId));
+      setJobs((prev) => prev.filter((job) => job._id !== jobId));
     } catch (err) {
       console.error(err);
       alert("Completion failed");
@@ -58,6 +68,40 @@ export default function MyAcceptedJobs() {
     } catch (err) {
       console.error(err);
       alert("Cancellation failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // ✅ RAISE DISPUTE
+
+  const handleDispute = async (jobId) => {
+    try {
+      const reason = disputeText[jobId];
+
+      if (!reason || reason.length < 10) {
+        alert("Reason too short");
+        return;
+      }
+
+      setActionLoading(jobId);
+
+      const formData = new FormData();
+      formData.append("jobId", jobId);
+      formData.append("text", reason);
+
+      if (evidenceFile[jobId]) {
+        formData.append("evidence", evidenceFile[jobId]);
+      }
+
+      await api.post("/disputes", formData);
+
+      alert("Dispute raised");
+
+      fetchJobs();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Dispute failed");
     } finally {
       setActionLoading(null);
     }
@@ -119,6 +163,18 @@ export default function MyAcceptedJobs() {
               </div>
             </div>
 
+            <textarea
+              placeholder="Enter dispute reason..."
+              value={disputeText[job._id] || ""}
+              onChange={(e) => updateDisputeText(job._id, e.target.value)}
+              className="dispute-input"
+            />
+
+            <input
+              type="file"
+              onChange={(e) => updateEvidenceFile(job._id, e.target.files[0])}
+            />
+
             <div className="actions">
               <button
                 onClick={() => handleComplete(job._id)}
@@ -134,6 +190,16 @@ export default function MyAcceptedJobs() {
               >
                 Cancel
               </button>
+
+              {(job.status === "assigned" || job.status === "completed") && (
+                <button
+                  className="dispute"
+                  onClick={() => handleDispute(job._id)}
+                  disabled={actionLoading === job._id}
+                >
+                  Dispute
+                </button>
+              )}
             </div>
           </div>
         ))
@@ -258,6 +324,11 @@ export default function MyAcceptedJobs() {
           color: white;
         }
 
+        .dispute:hover {
+          background: #f59e0b;
+          color: white;
+        }
+
         button:disabled {
           opacity: 0.6;
           cursor: not-allowed;
@@ -267,6 +338,16 @@ export default function MyAcceptedJobs() {
           padding: 40px;
           text-align: center;
           color: #6b7280;
+        }
+
+        .dispute-input {
+          width: 100%;
+          margin-top: 10px;
+          border-radius: 10px;
+          border: 1px solid #ddd;
+          padding: 10px;
+          resize: none;
+          font-size: 14px;
         }
       `}</style>
     </div>

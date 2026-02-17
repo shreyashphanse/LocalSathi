@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 export default function MyPostedJobs() {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,6 +41,35 @@ export default function MyPostedJobs() {
     } catch (err) {
       console.error(err);
       alert("Cancellation failed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // ✅ RAISE DISPUTE
+
+  const handleDispute = async (jobId) => {
+    try {
+      const reason = prompt("Enter dispute reason:");
+
+      if (!reason || reason.length < 10) {
+        alert("Reason must be at least 10 characters");
+        return;
+      }
+
+      setActionLoading(jobId);
+
+      await api.post("/disputes", {
+        jobId,
+        text: reason,
+      });
+
+      alert("Dispute raised");
+
+      fetchJobs();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Dispute failed");
     } finally {
       setActionLoading(null);
     }
@@ -90,15 +121,54 @@ export default function MyPostedJobs() {
               <div>
                 <b>Budget:</b> ₹{job.budget}
               </div>
+              {job.paymentDeadline && job.paymentStatus === "pending" && (
+                <div>
+                  <b>Payment Deadline:</b>{" "}
+                  {new Date(job.paymentDeadline).toLocaleTimeString()}
+                </div>
+              )}
             </div>
 
-            {(job.status === "open" || job.status === "assigned") && (
+            {/* ✅ OPEN JOB → ONLY CANCEL */}
+            {job.status === "open" && (
               <div className="actions">
                 <button
                   onClick={() => handleCancel(job._id)}
                   disabled={actionLoading === job._id}
                 >
                   {actionLoading === job._id ? "Processing..." : "Cancel"}
+                </button>
+              </div>
+            )}
+
+            {/* ✅ ASSIGNED JOB → CANCEL + DISPUTE */}
+            {job.status === "assigned" && (
+              <div className="actions dual">
+                <button
+                  onClick={() => handleCancel(job._id)}
+                  disabled={actionLoading === job._id}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="dispute"
+                  onClick={() => handleDispute(job._id)}
+                  disabled={actionLoading === job._id}
+                >
+                  Dispute
+                </button>
+              </div>
+            )}
+
+            {/* ✅ COMPLETED JOB → MAKE PAYMENT */}
+            {job.status === "completed" && job.paymentStatus === "pending" && (
+              <div className="actions">
+                <button
+                  className="payment"
+                  onClick={() => navigate(`/payment/${job.paymentId}`)}
+                >
+                  Make Payment
                 </button>
               </div>
             )}
@@ -189,6 +259,11 @@ export default function MyPostedJobs() {
           margin-top: 12px;
         }
 
+        .dual {
+          display: flex;
+          gap: 10px;
+        }
+
         .actions button {
           width: 100%;
           height: 40px;
@@ -201,6 +276,11 @@ export default function MyPostedJobs() {
 
         .actions button:hover {
           background: #ef4444;
+          color: white;
+        }
+
+        .dispute:hover {
+          background: #f59e0b;
           color: white;
         }
 

@@ -21,6 +21,7 @@ import ClientNavbar from "./components/ClientNavbar";
 import LabourNavbar from "./components/LabourNavbar";
 import ClientHome from "./screens/client/client_home";
 import LabourHome from "./screens/labour/labour_home";
+import PaymentPage from "./screens/client/payment_page";
 
 import AdminLogin from "./screens/admin/admin_login";
 import AdminPanel from "./screens/admin/admin_panel";
@@ -218,6 +219,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               {user?.role === "client" ? <ClientHome /> : <LabourHome />}
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/payment/:paymentId"
+          element={
+            <ProtectedRoute allowedRoles={["client"]}>
+              <PaymentPage />
             </ProtectedRoute>
           }
         />
