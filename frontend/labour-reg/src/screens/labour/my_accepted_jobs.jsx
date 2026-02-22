@@ -177,6 +177,7 @@ export default function MyAcceptedJobs() {
 
             <div className="actions">
               <button
+                className="complete"
                 onClick={() => handleComplete(job._id)}
                 disabled={actionLoading === job._id}
               >
@@ -205,151 +206,195 @@ export default function MyAcceptedJobs() {
         ))
       )}
 
-      <style jsx>{`
-        .feed-root {
-          min-height: 100vh;
-          padding: 16px;
-          max-width: 900px;
-          margin: auto;
-        }
+      <style>{`
 
-        /* ✅ TOP BAR */
-        .top-bar {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 16px;
-        }
+.feed-root {
+  min-height: 100vh;
+  padding: 16px;
+  max-width: 900px;
+  margin: auto;
+  background: #FFF7ED;   /* ✅ Labour Background */
+}
 
-        .top-bar input {
-          flex: 1;
-          height: 44px;
-          border-radius: 14px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
-          padding: 0 16px;
-          outline: none;
-          font-size: 14px;
-        }
+/* ✅ TOP BAR */
 
-        /* 🔥 PERFECT CIRCLE BUTTON */
+.top-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
 
-        .refresh-btn {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          border: none;
-          background: #10b981;
-          color: white;
-          font-size: 18px;
-          cursor: pointer;
-          flex-shrink: 0;
-        }
+.top-bar input {
+  flex: 1;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(154, 52, 18, 0.25);
+  padding: 0 16px;
+  outline: none;
+  font-size: 14px;
+  color: #7C2D12;
+}
 
-        .refresh-btn:hover {
-          background: #059669;
-        }
+.top-bar input:focus {
+  border-color: #9A3412;
+}
 
-        /* ✅ JOB CARD */
+/* ✅ REFRESH BUTTON */
 
-        .job-card {
-          background: white;
-          border-radius: 14px;
-          padding: 16px;
-          margin-bottom: 14px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-        }
+.refresh-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #9A3412;   /* ✅ Primary */
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.2s;
+}
 
-        .empty {
-          text-align: center;
-          color: #6b7280;
-          font-weight: 600;
-        }
+.refresh-btn:hover {
+  background: #7C2D12;
+}
 
-        .job-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
+/* ✅ JOB CARD */
 
-        h3 {
-          margin: 0;
-          color: #065f46;
-        }
+.job-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  box-shadow: 0 4px 12px rgba(154, 52, 18, 0.05);
+}
 
-        .status {
-          background: #ecfdf5;
-          color: #047857;
-          padding: 4px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-        }
+.empty {
+  text-align: center;
+  color: rgba(124, 45, 18, 0.6);
+  font-weight: 600;
+}
 
-        .desc {
-          margin: 8px 0;
-          color: #374151;
-        }
+/* ✅ HEADER */
 
-        .meta {
-          font-size: 14px;
-          color: #4b5563;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-        .actions {
-          margin-top: 12px;
-          display: flex;
-          gap: 10px;
-        }
+h3 {
+  margin: 0;
+  color: #7C2D12;
+}
 
-        button {
-          flex: 1;
-          height: 40px;
-          border-radius: 10px;
-          border: none;
-          background: #e5e7eb;
-          cursor: pointer;
-          font-weight: 600;
-        }
+/* ✅ STATUS BADGE */
 
-        button:hover {
-          background: #10b981;
-          color: white;
-        }
+.status {
+  background: #FFEDD5;
+  color: #9A3412;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-        .cancel:hover {
-          background: #ef4444;
-          color: white;
-        }
+/* ✅ DESCRIPTION */
 
-        .dispute:hover {
-          background: #f59e0b;
-          color: white;
-        }
+.desc {
+  margin: 8px 0;
+  color: #444;
+}
 
-        button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
+/* ✅ META */
 
-        .state {
-          padding: 40px;
-          text-align: center;
-          color: #6b7280;
-        }
+.meta {
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-        .dispute-input {
-          width: 100%;
-          margin-top: 10px;
-          border-radius: 10px;
-          border: 1px solid #ddd;
-          padding: 10px;
-          resize: none;
-          font-size: 14px;
-        }
-      `}</style>
+/* ✅ DISPUTE TEXTAREA */
+
+.dispute-input {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  padding: 10px;
+  resize: none;
+  font-size: 14px;
+  outline: none;
+}
+
+.dispute-input:focus {
+  border-color: #9A3412;
+}
+
+/* ✅ ACTIONS */
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  background: #F3F4F6;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+/* ✅ PRIMARY ACTION */
+
+.complete:hover {
+  background: #2d960d;
+  color: white;
+}
+
+/* ✅ CANCEL */
+
+.cancel:hover {
+  background: #DC2626;
+  color: white;
+}
+
+/* ✅ DISPUTE */
+
+.dispute:hover {
+  background: #D97706;
+  color: white;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ✅ STATE */
+
+.state {
+  padding: 40px;
+  text-align: center;
+  color: rgba(124, 45, 18, 0.7);
+}
+
+/* ✅ MOBILE */
+
+@media (max-width: 768px) {
+  .actions {
+    flex-direction: column;
+  }
+}
+
+`}</style>
     </div>
   );
 }

@@ -78,13 +78,13 @@ export default function Ratings() {
         <button onClick={handleSubmit}>Submit Rating</button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .ratings-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f0fdf4;
+          background: #fff7ed; /* ✅ Labour Background */
           padding: 20px;
         }
 
@@ -92,61 +92,81 @@ export default function Ratings() {
           width: 100%;
           max-width: 420px;
           background: white;
-          border-radius: 18px;
+          border-radius: 20px;
           padding: 24px;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          box-shadow: 0 10px 25px rgba(154, 52, 18, 0.08);
+          border: 1px solid rgba(154, 52, 18, 0.15);
         }
 
         h2 {
-          margin: 0 0 16px;
-          color: #065f46;
+          margin: 0 0 18px;
+          color: #7c2d12; /* ✅ Text Dark */
           text-align: center;
         }
+
+        /* ⭐ STARS */
 
         .stars {
           display: flex;
           justify-content: center;
-          gap: 10px;
-          font-size: 28px;
-          margin-bottom: 16px;
+          gap: 12px;
+          font-size: 30px;
+          margin-bottom: 18px;
         }
 
         .star {
           cursor: pointer;
-          color: #d1d5db;
+          color: #e5e7eb;
           transition: 0.2s;
         }
 
         .star.active {
-          color: #10b981;
-          transform: scale(1.15);
+          color: #d97706; /* ✅ Mustard Accent */
+          transform: scale(1.18);
         }
+
+        /* 📝 REVIEW */
 
         textarea {
           width: 100%;
           height: 90px;
-          border-radius: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
-          padding: 10px;
+          border-radius: 14px;
+          border: 1px solid rgba(154, 52, 18, 0.15);
+          padding: 12px;
           resize: none;
           outline: none;
-          margin-bottom: 14px;
+          margin-bottom: 16px;
+          font-size: 14px;
+          color: #7c2d12;
+          transition: 0.2s;
         }
+
+        textarea:focus {
+          border-color: #9a3412;
+          box-shadow: 0 0 0 2px rgba(154, 52, 18, 0.08);
+        }
+
+        /* ✅ BUTTON */
 
         button {
           width: 100%;
-          height: 44px;
-          border-radius: 12px;
+          height: 46px;
+          border-radius: 14px;
           border: none;
-          background: #10b981;
+          background: #9a3412; /* ✅ Primary */
           color: white;
           font-weight: 600;
           cursor: pointer;
+          transition: 0.2s;
         }
 
         button:hover {
-          background: #059669;
+          background: #7c2d12;
+        }
+
+        button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
       `}</style>
     </div>

@@ -89,125 +89,146 @@ export default function LabourDashboard() {
         </div>
       </div>
 
-      <style jsx>{`
-        .dash-root {
-          min-height: 100vh;
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          background: #f0fdf4;
-          padding: 16px;
-        }
+      <style>{`
 
-        .dash-card {
-          width: 100%;
-          max-width: 520px;
-          background: white;
-          border-radius: 18px;
-          padding: 22px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-        }
+.dash-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #FFF7ED;   /* ✅ Labour Background */
+  padding: 16px;
+}
 
-        h2 {
-          margin: 0 0 16px;
-          color: #065f46;
-          text-align: center;
-        }
+.dash-card {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  box-shadow: 0 8px 20px rgba(154, 52, 18, 0.08);
+}
 
-        h3 {
-          margin: 18px 0 10px;
-          color: #065f46;
-          font-size: 16px;
-        }
+/* ✅ HEADINGS */
 
-        .stats-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-bottom: 16px;
-        }
+h2 {
+  margin: 0 0 16px;
+  color: #7C2D12;   /* ✅ Text Dark */
+  text-align: center;
+}
 
-        .stat-box {
-          background: #ecfdf5;
-          border-radius: 14px;
-          padding: 14px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
+h3 {
+  margin: 18px 0 10px;
+  color: #7C2D12;
+  font-size: 16px;
+}
 
-        .stat-box span {
-          font-size: 13px;
-          color: #047857;
-        }
+/* ✅ STATS GRID */
 
-        .stat-box b {
-          font-size: 20px;
-          color: #065f46;
-        }
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
 
-        .earnings {
-          grid-column: span 2;
-          background: #10b981;
-        }
+.stat-box {
+  background: #FFEDD5;  /* ✅ Soft orange tint */
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(154, 52, 18, 0.12);
+}
 
-        .earnings span,
-        .earnings b {
-          color: white;
-        }
+.stat-box span {
+  font-size: 13px;
+  color: rgba(124, 45, 18, 0.7);
+}
 
-        button {
-          width: 100%;
-          height: 44px;
-          border-radius: 12px;
-          border: none;
-          background: #10b981;
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-        }
+.stat-box b {
+  font-size: 20px;
+  color: #9A3412;   /* ✅ Primary */
+}
 
-        button:hover {
-          background: #059669;
-        }
+/* ✅ EARNINGS HIGHLIGHT */
 
-        .jobs-section {
-          margin-top: 10px;
-        }
+.earnings {
+  grid-column: span 2;
+  background: #9A3412;   /* ✅ Primary */
+}
 
-        .job-card {
-          background: #f9fafb;
-          border-radius: 14px;
-          padding: 12px;
-          margin-bottom: 10px;
-          border: 1px solid rgba(16, 185, 129, 0.1);
-        }
+.earnings span,
+.earnings b {
+  color: white;
+}
 
-        .job-card h4 {
-          margin: 0;
-          color: #065f46;
-          font-size: 15px;
-        }
+/* ✅ BUTTON */
 
-        .job-card p {
-          margin: 6px 0 0;
-          font-size: 13px;
-          color: #374151;
-        }
+button {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #9A3412;   /* ✅ Primary */
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-        .empty-card {
-          background: #f9fafb;
-          padding: 16px;
-          border-radius: 14px;
-          text-align: center;
-        }
+button:hover {
+  background: #7C2D12;
+}
 
-        .state {
-          padding: 40px;
-          text-align: center;
-        }
-      `}</style>
+/* ✅ JOB PREVIEW */
+
+.jobs-section {
+  margin-top: 10px;
+}
+
+.job-card {
+  background: #FFF;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(154, 52, 18, 0.12);
+  box-shadow: 0 4px 10px rgba(154, 52, 18, 0.05);
+}
+
+.job-card h4 {
+  margin: 0;
+  color: #7C2D12;
+  font-size: 15px;
+}
+
+.job-card p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #444;
+}
+
+/* ✅ EMPTY CARD */
+
+.empty-card {
+  background: #FFF;
+  padding: 16px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid rgba(154, 52, 18, 0.12);
+}
+
+/* ✅ LOADING / ERROR */
+
+.state {
+  padding: 40px;
+  text-align: center;
+  color: #7C2D12;
+}
+
+`}</style>
     </div>
   );
 }

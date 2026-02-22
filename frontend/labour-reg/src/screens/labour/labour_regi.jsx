@@ -239,105 +239,159 @@ export default function LabourRegi({ lang }) {
         </form>
 
         <style>{`
-          .page-root {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: #f3f6ff;
-          }
+        :root {
+  --primary: #9A3412;
+}
+  /* PAGE */
 
-          .form {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-          }
+.page-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #FFF7ED;   /* ✅ Labour Background */
+}
 
-          .field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            position: relative;
-          }
+/* FORM */
 
-          .label-text {
-            font-size: 13px;
-            color: #6b7280;
-          }
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-          .input {
-            height: 44px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            background: #f8fafc;
-            font-size: 15px;
-            outline: none;
-          }
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
 
-          .submit-btn {
-            height: 46px;
-            border-radius: 10px;
-            border: none;
-            background: #2b6ef6;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-          }
+.label-text {
+  font-size: 13px;
+  color: rgba(124, 45, 18, 0.65);
+}
 
-          .row {
-            display: flex;
-            gap: 10px;
-          }
+/* INPUT */
 
-          .skills-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            background: #f8fafc;
-            min-height: 44px;
-            align-items: center;
-          }
+.input {
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  background: white;
+  font-size: 15px;
+  outline: none;
+  color: #7C2D12;
+  transition: 0.2s;
+}
 
-          .skill-tag {
-            background: #2b6ef6;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-          }
+.input:focus {
+  border-color: #9A3412;
+  box-shadow: 0 0 0 2px rgba(154, 52, 18, 0.08);
+}
 
-          .skill-input {
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 14px;
-            flex: 1;
-          }
+/* BUTTON */
 
-          .skills-dropdown {
-            border-radius: 10px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            margin-top: 6px;
-            background: white;
-          }
+.submit-btn {
+  height: 46px;
+  border-radius: 12px;
+  border: none;
+  background: #9A3412;   /* ✅ Primary */
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-          .dropdown-item {
-            padding: 10px 12px;
-            cursor: pointer;
-          }
+.submit-btn:hover {
+  background: #7C2D12;
+}
 
-          .dropdown-item:hover {
-            background: #f1f5f9;
-          }
-        `}</style>
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ROW */
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+/* SKILLS */
+
+.skills-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  background: white;
+  min-height: 44px;
+  align-items: center;
+}
+
+.skill-tag {
+  background: #9A3412;   /* ✅ Primary */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.skill-tag span {
+  cursor: pointer;
+}
+
+/* SKILL INPUT */
+
+.skill-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  flex: 1;
+  color: #7C2D12;
+}
+
+/* DROPDOWN */
+
+.skills-dropdown {
+  border-radius: 12px;
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  margin-top: 6px;
+  background: white;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #7C2D12;
+}
+
+.dropdown-item:hover {
+  background: rgba(154, 52, 18, 0.06);
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+`}</style>
       </FormCard>
     </div>
   );

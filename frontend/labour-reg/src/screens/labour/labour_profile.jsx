@@ -23,21 +23,19 @@ const STATIONS = ["Vasai", "Nalasopara", "Virar"];
 
 const styles = `
 :root {
-  --emerald-50: #f0fbf4;
-  --emerald-100: #e6f6ea;
-  --emerald-200: #c8eed0;
-  --emerald-300: #9fe2a8;
-  --emerald-500: #2f855a;
-  --emerald-600: #276749;
-  --emerald-700: #22543d;
-  --text: #0f172a;
+  --primary: #9A3412;
+  --secondary: #D97706;
+  --bg: #FFF7ED;
+  --card: #FFFFFF;
+  --text-dark: #7C2D12;
+  --border-soft: rgba(154, 52, 18, 0.15);
 }
 
 /* PAGE */
 
 .profile-root {
   padding: 28px;
-  background: var(--emerald-50);
+  background: var(--bg);
   min-height: 100vh;
 }
 
@@ -53,12 +51,12 @@ const styles = `
 .welcome {
   margin: 0;
   font-size: 20px;
-  color: var(--text);
+  color: var(--text-dark);
 }
 
 .sub {
   margin-top: 6px;
-  color: #5b6b59;
+  color: rgba(124, 45, 18, 0.6);
   font-size: 13px;
 }
 
@@ -72,20 +70,41 @@ const styles = `
 .btn {
   border: none;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
+  transition: 0.2s;
 }
 
 .btn.edit {
-  background: linear-gradient(180deg, var(--emerald-300), var(--emerald-500));
+  background: var(--primary);
   color: white;
+}
+
+.btn.edit:hover {
+  background: var(--text-dark);
 }
 
 .btn.cancel {
   background: transparent;
-  border: 1px solid rgba(47, 133, 90, 0.2);
-  color: var(--emerald-700);
+  border: 1px solid;
+  color: var(--text-dark);
+}
+
+.btn.cancel:hover {
+  background: rgb(194, 13, 13);
+  color: white;
+}
+
+.btn.save {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--text-dark);
+}
+
+.btn.save:hover {
+  background: rgb(23, 173, 9);
+  color: white;
 }
 
 /* CARD */
@@ -110,7 +129,7 @@ const styles = `
   border-radius: 50%;
   overflow: hidden;
   background: white;
-  border: 2px solid var(--emerald-500);
+  border: 2px solid var(--primary);
   cursor: pointer;
 }
 
@@ -129,18 +148,18 @@ const styles = `
 .display-name {
   font-weight: 700;
   font-size: 18px;
-  color: var(--emerald-700);
+  color: var(--text-dark);
 }
 
 .meta-text {
   font-size: 13px;
-  color: #4b5f4e;
+  color: rgba(124, 45, 18, 0.7);
 }
 
 .rating {
   margin-top: 6px;
   font-size: 14px;
-  color: var(--emerald-600);
+  color: var(--primary);
 }
 
 /* INPUT SECTION */
@@ -160,21 +179,26 @@ const styles = `
 
 .label-text {
   font-size: 12px;
-  color: #3f5a48;
+  color: rgba(124, 45, 18, 0.7);
 }
 
 .input {
   height: 44px;
   padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(47, 133, 90, 0.12);
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
   background: white;
   font-size: 14px;
   outline: none;
+  color: var(--text-dark);
+}
+
+.input:focus {
+  border-color: var(--primary);
 }
 
 .input.locked {
-  background: #f7f9f6;
+  background: #f9fafb;
 }
 
 /* ROW */
@@ -192,10 +216,11 @@ const styles = `
 
 .age-box {
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 14px;
   font-size: 13px;
-  border: 1px solid rgba(47, 133, 90, 0.12);
+  border: 1px solid var(--border-soft);
+  color: var(--text-dark);
 }
 
 /* SKILLS */
@@ -205,15 +230,15 @@ const styles = `
   flex-wrap: wrap;
   gap: 6px;
   padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(47, 133, 90, 0.12);
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
   background: white;
   min-height: 44px;
   align-items: center;
 }
 
 .skill-tag {
-  background: var(--emerald-500);
+  background: var(--primary);
   color: white;
   padding: 4px 10px;
   border-radius: 20px;
@@ -234,11 +259,12 @@ const styles = `
   font-size: 14px;
   flex: 1;
   min-width: 120px;
+  color: var(--text-dark);
 }
 
 .skills-dropdown {
-  border-radius: 10px;
-  border: 1px solid rgba(47, 133, 90, 0.12);
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
   margin-top: 6px;
   background: white;
   overflow: hidden;
@@ -251,7 +277,7 @@ const styles = `
 }
 
 .dropdown-item:hover {
-  background: var(--emerald-50);
+  background: rgba(154, 52, 18, 0.08);
 }
 
 /* LOGOUT */
@@ -262,14 +288,15 @@ const styles = `
   height: 44px;
   border-radius: 12px;
   border: none;
-  background: #ef4444;
+  background: var(--secondary);
   color: white;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .logout-btn:hover {
-  background: #dc2626;
+  background: rgb(194, 13, 13);
 }
 
 @media (max-width: 768px) {
@@ -433,7 +460,7 @@ export default function LabourProfileTop({ lang }) {
 
         <div className="actions">
           <button
-            className="btn edit"
+            className={`btn ${editing ? "save" : "edit"}`}
             onClick={() => {
               if (editing) handleSave();
               else {
@@ -452,7 +479,6 @@ export default function LabourProfileTop({ lang }) {
           >
             {editing ? "Save" : "Edit"}
           </button>
-
           {editing && (
             <button className="btn cancel" onClick={handleCancel}>
               Cancel

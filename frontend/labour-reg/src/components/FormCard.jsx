@@ -23,14 +23,14 @@ export default function FormCard({ title, children, logintitle }) {
           margin: 6px 0 12px;
           font-size: 22px;
           font-weight: 700;
-          color: #0c2c83ff;
+          color: var(--primary);
           text-align: center;
         }
         .logintitle {
           margin: 6px 0 12px;
           font-size: 22px;
           font-weight: 700;
-          color: #064d00ff;
+          color: var(--primary);
           text-align: center;
         }
       `}</style>

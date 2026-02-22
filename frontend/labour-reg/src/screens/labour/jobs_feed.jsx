@@ -136,117 +136,136 @@ export default function JobsFeed() {
 
       <style>{`
 
-        .feed-root {
-          height: 100vh;
-          background: #f0fdf4;
-          display: flex;
-          flex-direction: column;
-        }
+.feed-root {
+  height: 100vh;
+  background: #FFF7ED;   /* ✅ Background */
+  display: flex;
+  flex-direction: column;
+}
 
-        /* 🔥 STICKY HEADER */
+/* 🔥 STICKY HEADER */
 
-        .top-bar {
-          position: sticky;
-          top: 0;
-          display: flex;
-          gap: 8px;
-          padding: 12px 16px;
-          background: #f0fdf4;
-          border-bottom: 1px solid rgba(16, 185, 129, 0.15);
-          z-index: 10;
-        }
+.top-bar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #FFF7ED;   /* ✅ Match background */
+  border-bottom: 1px solid rgba(154, 52, 18, 0.15); /* Primary tint */
+  z-index: 10;
+}
 
-        .top-bar input {
-          flex: 1;
-          height: 44px;
-          padding: 10px 12px;
-          border-radius: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          background: white;
-          font-size: 15px;
-          outline: none;
-        }
+.top-bar input {
+  flex: 1;
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 52, 18, 0.2);  /* ✅ Primary tint */
+  background: white;
+  font-size: 15px;
+  outline: none;
+  color: #7C2D12;   /* ✅ Text Dark */
+}
 
-        .refresh-btn {
-          width: 44px;
-          border-radius: 12px;
-          border: none;
-          background: #10b981;
-          color: white;
-          font-size: 20px;
-          cursor: pointer;
-        }
+.top-bar input::placeholder {
+  color: rgba(124, 45, 18, 0.5);
+}
 
-        /* 🔥 SCROLLABLE CONTENT */
+.refresh-btn {
+  width: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #9A3412;   /* ✅ Primary */
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-        .feed-content {
-          flex: 1;
-          overflow-y: auto;
-          padding: 12px 16px;
-        }
+.refresh-btn:hover {
+  background: #7C2D12;
+}
 
-        .job-card {
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          border-radius: 14px;
-          padding: 16px;
-          margin-bottom: 12px;
-          background: white;
-          box-shadow: 0 4px 10px rgba(16, 185, 129, 0.05);
-        }
+/* 🔥 SCROLLABLE CONTENT */
 
-        .state-card {
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          border-radius: 14px;
-          padding: 18px;
-          background: white;
-          text-align: center;
-          color: #047857;
-        }
+.feed-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+}
 
-        .title {
-          color: #047857;
-        }
+/* 🔥 JOB CARD */
 
-        .desc {
-          color: #475569;
-          margin: 6px 0;
-        }
+.job-card {
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(154, 52, 18, 0.08);
+}
 
-        .actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 12px;
-        }
+.state-card {
+  border: 1px solid rgba(154, 52, 18, 0.15);
+  border-radius: 14px;
+  padding: 18px;
+  background: white;
+  text-align: center;
+  color: #7C2D12;   /* ✅ Text Dark */
+}
 
-        .job-btn {
-          flex: 1;
-          height: 40px;
-          border-radius: 10px;
-          border: none;
-          background: #e5e7eb;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
+/* 🔥 TEXT */
 
-        .job-btn:hover {
-          color: white;
-        }
+.title {
+  color: #7C2D12;   /* ✅ Text Dark */
+}
 
-        .accept-btn:hover {
-          background: #10b981;
-        }
+.desc {
+  color: #444;
+  margin: 6px 0;
+}
 
-        .reject-btn:hover {
-          background: #ef4444;
-        }
+/* 🔥 ACTIONS */
 
-        .job-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
 
-      `}</style>
+.job-btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  background: #FED7AA;  /* Soft orange tint */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #7C2D12;
+}
+
+/* ✅ ACCEPT BUTTON */
+
+.accept-btn:hover {
+  background: #109610;   /* Primary */
+  color: white;
+}
+
+/* ✅ REJECT BUTTON */
+
+.reject-btn:hover {
+  background: #ff0101;   /* Secondary (Mustard) */
+  color: white;
+}
+
+.job-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+`}</style>
     </div>
   );
 }

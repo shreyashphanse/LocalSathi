@@ -123,7 +123,10 @@ export default function MyCompletedJobs() {
 
             {/* ✅ ACTIONS 🔥 */}
             <div className="actions">
-              <button onClick={() => navigate(`/ratings/${job._id}`)}>
+              <button
+                className="rate-btn"
+                onClick={() => navigate(`/ratings/${job._id}`)}
+              >
                 Rate
               </button>
             </div>
@@ -132,6 +135,7 @@ export default function MyCompletedJobs() {
             {job.paymentStatus === "pending_confirmation" && (
               <div className="actions dual">
                 <button
+                  className="confirm-btn"
                   onClick={() => confirmPayment(job.paymentId)}
                   disabled={actionLoading === job.paymentId}
                 >
@@ -141,7 +145,7 @@ export default function MyCompletedJobs() {
                 </button>
 
                 <button
-                  className="dispute"
+                  className="dispute-btn"
                   onClick={() => disputePayment(job.paymentId)}
                   disabled={actionLoading === job.paymentId}
                 >
@@ -153,13 +157,16 @@ export default function MyCompletedJobs() {
         ))
       )}
 
-      <style jsx>{`
+      <style>{`
         .feed-root {
           min-height: 100vh;
           padding: 16px;
           max-width: 900px;
           margin: auto;
+          background: #fff7ed; /* ✅ Labour Background */
         }
+
+        /* ✅ TOP BAR */
 
         .top-bar {
           display: flex;
@@ -171,35 +178,48 @@ export default function MyCompletedJobs() {
           flex: 1;
           height: 44px;
           border-radius: 14px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
+          border: 1px solid rgba(154, 52, 18, 0.25);
           padding: 0 16px;
           outline: none;
           font-size: 14px;
+          color: #7c2d12;
         }
+
+        .top-bar input:focus {
+          border-color: #9a3412;
+        }
+
+        /* ✅ REFRESH BUTTON */
 
         .refresh-btn {
           width: 44px;
           height: 44px;
           border-radius: 12px;
           border: none;
-          background: #10b981;
+          background: #9a3412;
           color: white;
           font-size: 18px;
           cursor: pointer;
           flex-shrink: 0;
+          transition: 0.2s;
         }
 
         .refresh-btn:hover {
-          background: #059669;
+          background: #7c2d12;
         }
+
+        /* ✅ JOB CARD */
 
         .job-card {
           background: white;
-          border-radius: 14px;
+          border-radius: 16px;
           padding: 16px;
           margin-bottom: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(154, 52, 18, 0.15);
+          box-shadow: 0 4px 12px rgba(154, 52, 18, 0.05);
         }
+
+        /* ✅ HEADER */
 
         .job-header {
           display: flex;
@@ -209,8 +229,10 @@ export default function MyCompletedJobs() {
 
         h3 {
           margin: 0;
-          color: #065f46;
+          color: #7c2d12;
         }
+
+        /* ✅ STATUS */
 
         .status {
           padding: 4px 10px;
@@ -220,18 +242,22 @@ export default function MyCompletedJobs() {
         }
 
         .completed {
-          background: #ecfdf5;
-          color: #047857;
+          background: #cfecca;
+          color: #137706;
         }
+
+        /* ✅ DESCRIPTION */
 
         .desc {
           margin: 8px 0;
-          color: #374151;
+          color: #444;
         }
+
+        /* ✅ META */
 
         .meta {
           font-size: 14px;
-          color: #4b5563;
+          color: #444;
           display: flex;
           flex-direction: column;
           gap: 4px;
@@ -248,35 +274,71 @@ export default function MyCompletedJobs() {
           gap: 10px;
         }
 
-        .dispute:hover {
-          background: #f59e0b;
-          color: white;
-        }
+        /* ✅ BASE BUTTON */
 
         .actions button {
           width: 100%;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 12px;
           border: none;
-          background: #e5e7eb;
           cursor: pointer;
           font-weight: 600;
+          transition: 0.2s;
         }
 
-        .actions button:hover {
-          background: #10b981;
+        /* ✅ RATE BUTTON */
+
+        .rate-btn {
+          background: #9a3412;
           color: white;
         }
 
+        .rate-btn:hover {
+          background: #7c2d12;
+        }
+
+        /* ✅ CONFIRM BUTTON */
+
+        .confirm-btn {
+          background: #15803d;
+          color: white;
+        }
+
+        .confirm-btn:hover {
+          background: #166534;
+        }
+
+        /* ✅ DISPUTE BUTTON */
+
+        .dispute-btn {
+          background: #d97706;
+          color: white;
+        }
+
+        .dispute-btn:hover {
+          background: #b45309;
+        }
+
+        /* ✅ EMPTY / STATE */
+
         .empty {
           text-align: center;
-          color: #6b7280;
+          color: rgba(124, 45, 18, 0.6);
           font-weight: 600;
         }
 
         .state {
           padding: 40px;
           text-align: center;
+          color: rgba(124, 45, 18, 0.7);
+        }
+
+        /* ✅ MOBILE */
+
+        @media (max-width: 768px) {
+          .actions {
+            flex-direction: column;
+          }
         }
       `}</style>
     </div>
