@@ -1,25 +1,35 @@
-export const stations = ["Vasai", "Nalasopara", "Virar"];
+export const stations = ["vasai", "nalasopara", "virar"];
 
 export const getStationIndex = (station) => {
-  return stations.indexOf(station);
+  if (!station) return -1;
+
+  return stations.indexOf(station.toLowerCase().trim());
 };
 
 export const isStationOverlap = (jobFrom, jobTo, labourFrom, labourTo) => {
-  const jobStart = getStationIndex(jobFrom);
-  const jobEnd = getStationIndex(jobTo);
+  const jobStartRaw = getStationIndex(jobFrom);
+  const jobEndRaw = getStationIndex(jobTo);
 
-  const labourStart = getStationIndex(labourFrom);
-  const labourEnd = getStationIndex(labourTo);
+  const labourStartRaw = getStationIndex(labourFrom);
+  const labourEndRaw = getStationIndex(labourTo);
 
   if (
-    jobStart === -1 ||
-    jobEnd === -1 ||
-    labourStart === -1 ||
-    labourEnd === -1
+    jobStartRaw === -1 ||
+    jobEndRaw === -1 ||
+    labourStartRaw === -1 ||
+    labourEndRaw === -1
   )
     return false;
 
-  return jobStart <= labourEnd && labourStart <= jobEnd;
+  const jobStart = Math.min(jobStartRaw, jobEndRaw);
+  const jobEnd = Math.max(jobStartRaw, jobEndRaw);
+
+  const labourStart = Math.min(labourStartRaw, labourEndRaw);
+  const labourEnd = Math.max(labourStartRaw, labourEndRaw);
+
+  /* ✅ STRICT CONTAINMENT */
+
+  return jobStart >= labourStart && jobEnd <= labourEnd;
 };
 
 export const getOverlapStrength = (jobFrom, jobTo, labourFrom, labourTo) => {

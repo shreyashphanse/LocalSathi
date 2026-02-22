@@ -13,7 +13,6 @@ import {
   getMyCompletedJobs,
   getClientDashboard,
   getLabourDashboard,
-  submitRating,
 } from "../controllers/jobController.js";
 
 import {
@@ -22,6 +21,7 @@ import {
   labourOnly,
 } from "../middleware/authMiddleware.js";
 import { checkBan } from "../middleware/checkBan.js";
+import { submitRating } from "../controllers/ratingController.js";
 
 const router = express.Router();
 

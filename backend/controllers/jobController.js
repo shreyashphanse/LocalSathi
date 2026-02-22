@@ -127,29 +127,50 @@ export const getLabourStats = async (req, res) => {
 export const getJobs = async (req, res) => {
   try {
     const userId = req.user._id;
-    /* ✅ RISK ENGINE VISIBILITY BLOCK */
+
     if (req.user.riskLevel === "dangerous") {
       return res.json([]);
     }
 
-    const { skill, from, to, expectedRate } = req.query;
+    const expectedRate = Number(req.user.expectedRate || 0);
 
-    let jobs = await Job.find({
+    const labourSkills = req.user.skills || [];
+    const labourStart = req.user.stationRange?.start;
+    const labourEnd = req.user.stationRange?.end;
+
+    const query = {
       status: "open",
       createdBy: { $ne: userId },
       rejectedBy: { $ne: userId },
-    });
+    };
 
-    if (skill) {
-      jobs = jobs.filter(
-        (job) => job.skillRequired.toLowerCase() === skill.toLowerCase(),
-      );
+    if (labourSkills.length) {
+      query.skillRequired = { $in: labourSkills };
     }
 
-    if (from && to) {
-      jobs = jobs.filter((job) =>
-        isStationOverlap(job.stationRange.from, job.stationRange.to, from, to),
-      );
+    let jobs = await Job.find(query);
+
+    /* ✅ CRITICAL MISSING PIECE — STATION FILTERING */
+
+    if (labourStart && labourEnd) {
+      jobs = jobs.filter((job) => {
+        const valid = isStationOverlap(
+          job.stationRange.from,
+          job.stationRange.to,
+          labourStart,
+          labourEnd,
+        );
+
+        // console.log(
+        //   "JOB:",
+        //   job.stationRange.from,
+        //   job.stationRange.to,
+        //   "→",
+        //   valid,
+        // );
+
+        return valid;
+      });
     }
 
     const enrichedJobs = [];
@@ -157,21 +178,23 @@ export const getJobs = async (req, res) => {
     for (const job of jobs) {
       const budgetCompatibility = getBudgetCompatibility(
         job.budget,
-        Number(expectedRate),
+        expectedRate,
       );
 
       const stationOverlapStrength = getOverlapStrength(
         job.stationRange.from,
         job.stationRange.to,
-        req.user.stationRange?.start,
-        req.user.stationRange?.end,
+        labourStart,
+        labourEnd,
       );
 
       const skillMatch =
-        !req.user.skills?.length || req.user.skills.includes(job.skillRequired);
+        !labourSkills.length ||
+        labourSkills.some(
+          (skill) => skill.toLowerCase() === job.skillRequired.toLowerCase(),
+        );
 
       const client = await User.findById(job.createdBy);
-
       const clientReliability = client?.reliabilityScore || 50;
 
       const successProbability = calculateSuccessProbability({
@@ -183,19 +206,14 @@ export const getJobs = async (req, res) => {
 
       enrichedJobs.push({
         ...job._doc,
-
         budgetCompatibility,
-
         successProbability,
-
-        score: calculateJobScore(job, Number(expectedRate), {
+        score: calculateJobScore(job, expectedRate, {
           skillMatch,
           stationOverlapStrength,
-
-          clientReliability, // already exists
-          labourReliability: req.user.reliabilityScore, // ✅ NEW
-          clientRisk: client?.riskLevel, // ✅ NEW
-
+          clientReliability,
+          labourReliability: req.user.reliabilityScore,
+          clientRisk: client?.riskLevel,
           budgetCompatibility,
           successProbability,
         }),

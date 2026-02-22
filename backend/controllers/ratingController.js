@@ -4,29 +4,26 @@ import User from "../models/User.js";
 
 export const submitRating = async (req, res) => {
   try {
-    const { jobId, rating, comment } = req.body;
-
+    const jobId = req.params.id;
+    const { rating, comment } = req.body;
     const job = await Job.findById(jobId);
 
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
     }
 
-    // ✅ Only participants can rate
     const isParticipant =
       job.createdBy.toString() === req.user._id.toString() ||
-      job.acceptedBy?.toString() === req.user._id.toString();
+      job.labourId?.toString() === req.user._id.toString();
 
     if (!isParticipant) {
       return res.status(403).json({ message: "Not allowed to rate" });
     }
 
-    // ✅ Only completed jobs
     if (job.status !== "completed") {
       return res.status(400).json({ message: "Job not completed" });
     }
 
-    // ✅ Determine reviewee
     let reviewee;
 
     if (job.createdBy.toString() === req.user._id.toString()) {
@@ -35,9 +32,19 @@ export const submitRating = async (req, res) => {
       reviewee = job.createdBy;
     }
 
-    // ✅ Prevent self rating 🔥🔥🔥
     if (reviewee.toString() === req.user._id.toString()) {
       return res.status(400).json({ message: "Cannot rate yourself" });
+    }
+
+    /* ✅ DUPLICATE RATING GUARD 🔥🔥🔥 */
+
+    const existingRating = await Rating.findOne({
+      job: jobId,
+      reviewer: req.user._id,
+    });
+
+    if (existingRating) {
+      return res.status(400).json({ message: "Already rated this job" });
     }
 
     const newRating = await Rating.create({
@@ -48,7 +55,6 @@ export const submitRating = async (req, res) => {
       comment,
     });
 
-    // ✅ Update reliability score 🔥
     const user = await User.findById(reviewee);
 
     user.reliabilityScore = (user.reliabilityScore + rating * 10) / 2;
@@ -57,7 +63,17 @@ export const submitRating = async (req, res) => {
 
     res.json(newRating);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("RATING ERROR:", err);
+
+    if (err.code === 11000) {
+      return res.status(400).json({
+        message: "Already rated this job",
+      });
+    }
+
+    res.status(400).json({
+      message: err.message || "Rating failed",
+    });
   }
 };
 
