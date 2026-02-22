@@ -357,26 +357,47 @@ export default function LabourProfileTop({ lang }) {
   };
 
   const handleSave = async () => {
-    const formData = new FormData();
+    const missingFields = [];
 
-    formData.append("name", fullName);
-    formData.append("address", address);
-    formData.append("gender", gender);
-    formData.append("dob", dob);
+    if (!fullName.trim()) missingFields.push("Full Name");
+    if (!address.trim()) missingFields.push("Address");
+    if (!gender) missingFields.push("Gender");
+    if (!dob) missingFields.push("DOB");
+    if (!stationFrom) missingFields.push("Station From");
+    if (!stationTo) missingFields.push("Station To");
+    if (!skills.length) missingFields.push("Skills");
 
-    formData.append("stationFrom", stationFrom);
-    formData.append("stationTo", stationTo);
-
-    formData.append("skills", JSON.stringify(skills));
-
-    if (profilePhotoFile) {
-      formData.append("profilePhoto", profilePhotoFile);
+    if (missingFields.length) {
+      return alert(`Missing fields:\n${missingFields.join("\n")}`);
     }
 
-    await api.patch("/users/profile", formData);
+    /* ✅ SAFE TO SAVE */
 
-    setEditing(false);
-    alert("Profile Updated");
+    try {
+      const formData = new FormData();
+
+      formData.append("name", fullName);
+      formData.append("address", address);
+      formData.append("gender", gender);
+      formData.append("dob", dob);
+
+      formData.append("stationFrom", stationFrom);
+      formData.append("stationTo", stationTo);
+
+      formData.append("skills", JSON.stringify(skills));
+
+      if (profilePhotoFile) {
+        formData.append("profilePhoto", profilePhotoFile);
+      }
+
+      await api.patch("/users/profile", formData);
+
+      setEditing(false);
+      alert("Profile Updated");
+    } catch (err) {
+      console.error(err);
+      alert("Update failed");
+    }
   };
 
   const handleCancel = () => {

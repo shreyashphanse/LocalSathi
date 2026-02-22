@@ -307,9 +307,9 @@ export default function ClientProfileTop({ lang }) {
         formData.append("profilePhoto", profilePhotoFile);
       }
 
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // for (let pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
 
       await api.patch("/users/profile", formData, {
         transformRequest: (data) => data, // ✅ CRITICAL FIX

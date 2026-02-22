@@ -1,10 +1,12 @@
 import { useState } from "react";
 import api from "../../utils/api";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Ratings() {
   const params = useParams();
   const jobId = params.id;
+  const navigate = useNavigate();
 
   console.log("JOB ID:", jobId); // ✅ DEBUG (KEEP for now)
 
@@ -26,13 +28,23 @@ export default function Ratings() {
     try {
       await api.patch(`/jobs/${jobId}/rate`, {
         rating,
-        review,
+        comment: review,
       });
 
       alert("Rating submitted");
+      navigate("/mycompleted");
     } catch (err) {
       console.error(err);
-      alert("Rating failed");
+
+      const message = err.response?.data?.message;
+
+      if (message === "Already rated this job") {
+        alert("You have already rated this job");
+        navigate("/mycompleted");
+        return;
+      }
+
+      alert(message || "Rating failed");
     }
   };
 
