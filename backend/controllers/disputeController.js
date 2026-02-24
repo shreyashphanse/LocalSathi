@@ -59,6 +59,7 @@ export const raiseDispute = async (req, res) => {
       severity,
       previousJobStatus: job.status,
       evidence: req.file ? req.file.path : null, // ✅ NEW
+      type: "job",
     });
 
     job.status = "disputed";
