@@ -73,20 +73,18 @@ export default function Login({ lang }) {
 
           {/* ✅ REUSED OTP ROW → PASSWORD ROW */}
 
-          <div className="otp-row">
-            <label className="field otp-field">
-              <span className="label-text">Password</span>
+          <label className="field">
+            <span className="label-text">Password</span>
 
-              <input
-                type="password"
-                placeholder="Enter Password"
-                onFocus={ensureMobileFocus}
-                className="input"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
-            </label>
-          </div>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              onFocus={ensureMobileFocus}
+              className="input"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+          </label>
 
           <button className="submit-btn" type="submit" disabled={loading}>
             {loading ? "Logging in..." : t(lang, "login")}
@@ -129,19 +127,19 @@ export default function Login({ lang }) {
           }
 
           .input {
-            height: 44px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--g-border);
-            background: var(--g-input-bg);
-            font-size: 15px;
-            outline: none;
-          }
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--g-border);
+  background: var(--g-input-bg);
+  font-size: 15px;
+  outline: none;
 
-          .otp-row {
-            display: flex;
-            gap: 10px;
-          }
+  width: 100%;          /* ✅ CRITICAL FIX */
+  box-sizing: border-box; /* ✅ Prevent padding overflow */
+}
+
+
 
           .submit-btn {
             height: 46px;

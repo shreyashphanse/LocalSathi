@@ -82,36 +82,26 @@ export default function Navbar() {
           padding: 0 12px;
           border-radius: 12px;
           border: none;
-          background: #fff7ed; /* ✅ Light Labour Tint */
-          color: #7c2d12; /* ✅ Labour Text */
+          background: #a07669;
+          color: white;
           font-size: 13px;
           cursor: pointer;
           font-weight: 600;
+          transition: 0.2s;
         }
 
         .nav-card button:hover {
-          background: #d97706; /* ✅ Mustard Accent */
+          background: #d97706;
           color: white;
         }
-
-        /* ✅ ACTIVE TAB 🔥 */
 
         .nav-card button.active {
-          background: #9a3412; /* ✅ Primary */
+          background: #aa320a;
           color: white;
-          box-shadow: 0 4px 10px rgba(154, 52, 18, 0.35);
         }
 
-        button {
-          height: 36px;
-          padding: 0 12px;
-          border-radius: 12px;
-          border: none;
-          background: #ffffff;
-          color: #065f46;
-          font-size: 13px;
-          cursor: pointer;
-          font-weight: 600;
+        .nav-card button.active:hover {
+          background: #d97706;
         }
       `}</style>
     </div>

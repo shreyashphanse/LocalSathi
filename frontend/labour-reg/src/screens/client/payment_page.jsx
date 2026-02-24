@@ -74,7 +74,7 @@ export default function PaymentPage() {
           display: flex;
           justify-content: center;
           align-items: center;
-          background: #f9fafb;
+          background: #f5f3ff;
         }
 
         .payment-card {
@@ -86,39 +86,50 @@ export default function PaymentPage() {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          border: 1px solid rgba(76, 29, 149, 0.15);
         }
 
         h2 {
           margin: 0;
-          color: #065f46;
+          color: #1e1b4b;
         }
 
         input {
-          padding: 8px;
+          padding: 10px 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(76, 29, 149, 0.15);
+          outline: none;
+          color: #1e1b4b;
+        }
+
+        input:focus {
+          border-color: #0e7490;
+          box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.15);
         }
 
         .preview {
           width: 100%;
           border-radius: 10px;
-          border: 1px solid #e5e7eb;
+          border: 1px solid rgba(76, 29, 149, 0.15);
         }
 
         button {
           height: 42px;
           border: none;
           border-radius: 12px;
-          background: #10b981;
+          background: #3b0f7a;
           color: white;
           font-weight: 600;
           cursor: pointer;
+          transition: 0.2s;
         }
 
         button:hover {
-          background: #059669;
+          background: #0e7490;
         }
 
         button:disabled {
-          background: #9ca3af;
+          background: rgba(30, 27, 75, 0.35);
           cursor: not-allowed;
         }
       `}</style>

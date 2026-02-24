@@ -86,92 +86,94 @@ export default function ClientDashboard() {
       </div>
 
       <style jsx>{`
-        .dash-root {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #f0fdf4;
-          padding: 16px;
-        }
+  .dash-root {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F3FF;
+    padding: 16px;
+  }
 
-        .dash-card {
-          width: 100%;
-          max-width: 520px;
-          background: white;
-          border-radius: 18px;
-          padding: 22px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-        }
+  .dash-card {
+    width: 100%;
+    max-width: 520px;
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid rgba(76, 29, 149, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  }
 
-        h2 {
-          margin: 0 0 16px;
-          color: #065f46;
-          text-align: center;
-        }
+  h2 {
+    margin: 0 0 16px;
+    color: #1E1B4B;
+    text-align: center;
+  }
 
-        .stats-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-bottom: 16px;
-        }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
 
-        .stat-box {
-          background: #ecfdf5;
-          border-radius: 14px;
-          padding: 14px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
+  .stat-box {
+    background: rgba(76, 29, 149, 0.06);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-        .stat-box span {
-          font-size: 13px;
-          color: #047857;
-        }
+  .stat-box span {
+    font-size: 13px;
+    color: rgba(30, 27, 75, 0.6);
+  }
 
-        .stat-box b {
-          font-size: 20px;
-          color: #065f46;
-        }
+  .stat-box b {
+    font-size: 20px;
+    color: #4C1D95;
+  }
 
-        .job-card {
-          background: #ecfdf5;
-          border-radius: 14px;
-          padding: 12px;
-          margin-top: 10px;
-        }
+  .job-card {
+    background: rgba(76, 29, 149, 0.06);
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 10px;
+  }
 
-        .empty-card {
-          margin-top: 14px;
-          background: #ecfdf5;
-          padding: 14px;
-          border-radius: 14px;
-          text-align: center;
-        }
+  .empty-card {
+    margin-top: 14px;
+    background: rgba(76, 29, 149, 0.06);
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    color: rgba(30, 27, 75, 0.6);
+  }
 
-        button {
-          width: 100%;
-          height: 44px;
-          border-radius: 12px;
-          border: none;
-          background: #10b981;
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-        }
+  button {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    background: #4C1D95;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-        button:hover {
-          background: #059669;
-        }
+  button:hover {
+    background: #06B6D4;
+  }
 
-        .state {
-          padding: 40px;
-          text-align: center;
-        }
-      `}</style>
+  .state {
+    padding: 40px;
+    text-align: center;
+    color: rgba(30, 27, 75, 0.6);
+  }
+`}</style>
     </div>
   );
 }

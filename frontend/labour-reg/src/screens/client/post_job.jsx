@@ -170,7 +170,7 @@ export default function PostJob() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f0fdf4;
+          background: #f5f3ff;
           padding: 16px;
         }
 
@@ -183,13 +183,13 @@ export default function PostJob() {
           display: flex;
           flex-direction: column;
           gap: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(76, 29, 149, 0.15);
           position: relative;
         }
 
         h2 {
           margin: 0 0 8px;
-          color: #065f46;
+          color: #1e1b4b;
         }
 
         input,
@@ -197,10 +197,19 @@ export default function PostJob() {
         select {
           height: 44px;
           border-radius: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
+          border: 1px solid rgba(76, 29, 149, 0.15);
           padding: 0 12px;
           outline: none;
           font-size: 14px;
+          color: #1e1b4b;
+          background: white;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+          border-color: #0e7490;
+          box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.15);
         }
 
         textarea {
@@ -218,14 +227,15 @@ export default function PostJob() {
           height: 44px;
           border-radius: 12px;
           border: none;
-          background: #10b981;
+          background: #3b0f7a;
           color: white;
           font-weight: 600;
           cursor: pointer;
+          transition: 0.2s;
         }
 
         button:hover {
-          background: #059669;
+          background: #0e7490;
         }
 
         button:disabled {
@@ -244,26 +254,28 @@ export default function PostJob() {
           width: 100%;
           background: white;
           border-radius: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
+          border: 1px solid rgba(76, 29, 149, 0.15);
           margin-top: 4px;
           max-height: 160px;
           overflow-y: auto;
           z-index: 10;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
         }
 
         .dropdown-item {
           padding: 10px 12px;
           cursor: pointer;
           font-size: 14px;
+          color: #1e1b4b;
         }
 
         .dropdown-item:hover {
-          background: #f0fdf4;
+          background: rgba(76, 29, 149, 0.06);
         }
 
         .selected-skill {
           font-size: 13px;
-          color: #065f46;
+          color: #3b0f7a;
           margin-top: 6px;
         }
       `}</style>

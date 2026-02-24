@@ -85,29 +85,29 @@ export default function ClientDashboard() {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .dash-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f0fdf4;
+          background: #f5f3ff;
           padding: 16px;
         }
 
         .dash-card {
           width: 100%;
           max-width: 520px;
-          background: white;
+          background: #ffffff;
           border-radius: 18px;
           padding: 22px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(76, 29, 149, 0.15);
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
 
         h2 {
           margin: 0 0 16px;
-          color: #065f46;
+          color: #1e1b4b;
           text-align: center;
         }
 
@@ -119,7 +119,7 @@ export default function ClientDashboard() {
         }
 
         .stat-box {
-          background: #ecfdf5;
+          background: rgba(76, 29, 149, 0.06);
           border-radius: 14px;
           padding: 14px;
           display: flex;
@@ -129,16 +129,16 @@ export default function ClientDashboard() {
 
         .stat-box span {
           font-size: 13px;
-          color: #047857;
+          color: rgba(30, 27, 75, 0.6);
         }
 
         .stat-box b {
           font-size: 20px;
-          color: #065f46;
+          color: #3b0f7a;
         }
 
         .job-card {
-          background: #ecfdf5;
+          background: rgba(76, 29, 149, 0.06);
           border-radius: 14px;
           padding: 12px;
           margin-top: 10px;
@@ -146,10 +146,11 @@ export default function ClientDashboard() {
 
         .empty-card {
           margin-top: 14px;
-          background: #ecfdf5;
+          background: rgba(76, 29, 149, 0.06);
           padding: 14px;
           border-radius: 14px;
           text-align: center;
+          color: rgba(30, 27, 75, 0.6);
         }
 
         button {
@@ -157,19 +158,20 @@ export default function ClientDashboard() {
           height: 44px;
           border-radius: 12px;
           border: none;
-          background: #10b981;
+          background: #3b0f7a;
           color: white;
           font-weight: 600;
           cursor: pointer;
         }
 
         button:hover {
-          background: #059669;
+          background: #0e7490;
         }
 
         .state {
           padding: 40px;
           text-align: center;
+          color: rgba(30, 27, 75, 0.6);
         }
       `}</style>
     </div>

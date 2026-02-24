@@ -7,27 +7,26 @@ import api from "../../utils/api";
 
 const styles = `
   :root {
-    --bg-100: #0f1720;
-    --panel: #1a1f24;
-    --muted: #72797c;
-    --accent: #696969;
-    --accent-strong: #6e6e6e;
-    --input-bg: #101418;
-    --border: rgba(230, 230, 230, 0.06);
-    --text: #5a5c5f;
+    --bg-100: #F5F3FF;
+    --panel: #FFFFFF;
+    --muted: rgba(30, 27, 75, 0.6);
+    --accent: #4C1D95;
+    --accent-strong: #3B0F7A;
+    --input-bg: #FFFFFF;
+    --border: rgba(76, 29, 149, 0.15);
+    --text: #1E1B4B;
   }
 
   .profile-root {
-  padding: 28px;
-  background: linear-gradient(180deg, #0b0d0f, #0f1316);
-  min-height: 100vh;
-  color: var(--text);
+    padding: 28px;
+    background: var(--bg-100);
+    min-height: 100vh;
+    color: var(--text);
 
-  width: 100%;
-  max-width: 1400px;   /* 🔥 wider desktop */
-  margin: 0 auto;
-}
-
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 
   .page-header {
     display: flex;
@@ -48,33 +47,76 @@ const styles = `
     font-size: 13px;
   }
 
+  /* ✅ BUTTON SYSTEM */
+
   .actions {
     display: flex;
     gap: 10px;
   }
 
   .btn {
-    background: linear-gradient(180deg, #32373b, #1f2427);
-    color: var(--accent-strong);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: none;
     padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
+    transition: 0.2s;
   }
+
+  /* EDIT → Dominant Action */
+
+  .btn.edit {
+    background: rgba(77, 29, 149, 0.56);
+    color: white;
+    border: 1px solid rgba(54, 20, 105, 0.61);
+  }
+
+  .btn.edit:hover {
+    background: var(--accent-strong);
+  }
+
+  /* SAVE → Soft → Strong */
+
+  .btn.save {
+    background: rgba(76, 29, 149, 0.08);
+    color: var(--accent-strong);
+    border: 1px solid var(--border);
+  }
+
+  .btn.save:hover {
+    background: rgb(10, 110, 23);
+    color: white;
+    border-color: rgb(10, 110, 23);
+  }
+
+  /* CANCEL → Ghost → Destructive */
 
   .btn.cancel {
     background: transparent;
+    border: 1px solid var(--border);
     color: var(--muted);
   }
 
-  /* ✅ PROFILE CARD STRUCTURE */
+  .btn.cancel:hover {
+    background: #dc2626;
+    color: white;
+    border-color: #dc2626;
+  }
+
+  /* ✅ CARD */
 
   .profile-card {
     display: flex;
     flex-direction: column;
     gap: 22px;
+    background: var(--panel);
+    padding: 22px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
   }
+
+  /* ✅ TOP SECTION */
 
   .top-section {
     display: flex;
@@ -87,15 +129,15 @@ const styles = `
     height: 90px;
     border-radius: 50%;
     overflow: hidden;
-    background: radial-gradient(circle, #2b2f33, #111315);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
-    border: 2px solid rgba(255,255,255,0.08);
+    background: rgba(76, 29, 149, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--border);
     flex-shrink: 0;
   }
 
   .avatar-wrap.editable {
     cursor: pointer;
-    outline: 2px dashed rgba(255, 255, 255, 0.12);
+    outline: 2px dashed rgba(76, 29, 149, 0.25);
   }
 
   .avatar {
@@ -162,20 +204,26 @@ const styles = `
   .input {
     height: 44px;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid var(--border);
     background: var(--input-bg);
     font-size: 14px;
     outline: none;
     color: var(--text);
+    transition: 0.2s;
+  }
+
+  .input:focus {
+    border-color: #0E7490;
+    box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.15);
   }
 
   .input.locked {
-    background: #0c0f10;
+    background: rgba(76, 29, 149, 0.04);
     color: var(--muted);
   }
 
-  /* ✅ DOB + GENDER ROW */
+  /* ✅ ROW */
 
   .row {
     display: flex;
@@ -186,16 +234,20 @@ const styles = `
     flex: 1;
   }
 
-  /* ✅ AGE BOX */
+  /* ✅ AGE */
 
   .age-box {
     margin-top: 4px;
-    background: var(--input-bg);
-    border-radius: 10px;
+    background: rgba(76, 29, 149, 0.04);
+    border-radius: 12px;
     padding: 10px 14px;
     font-size: 13px;
     color: var(--muted);
     border: 1px solid var(--border);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   /* ✅ LOGOUT */
@@ -206,23 +258,16 @@ const styles = `
     height: 44px;
     border-radius: 12px;
     border: none;
-    background: #fee2e2;
-    color: #991b1b;
+    background: var(--accent-strong);
+    color: white;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
   }
 
   .logout-btn:hover {
-    background: #ef4444;
-    color: white;
+    background: rgb(168, 8, 8);
   }
-
-  .input-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 
   /* ✅ RESPONSIVE */
 
@@ -375,7 +420,7 @@ export default function ClientProfileTop({ lang }) {
 
         <div className="actions">
           <button
-            className="btn"
+            className={`btn ${editing ? "save" : "edit"}`}
             onClick={() => {
               if (editing) handleSave();
               else {

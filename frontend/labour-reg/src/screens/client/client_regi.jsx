@@ -197,7 +197,7 @@ export default function ClientRegi({ lang }) {
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: #f3f6ff;
+            background: #f5f3ff;
           }
 
           .form {
@@ -214,27 +214,39 @@ export default function ClientRegi({ lang }) {
 
           .label-text {
             font-size: 13px;
-            color: #6b7280;
+            color: rgba(30, 27, 75, 0.6);
           }
 
           .input {
             height: 44px;
             padding: 10px 12px;
             border-radius: 10px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            background: #f8fafc;
+            border: 1px solid rgba(76, 29, 149, 0.15);
+            background: white;
             font-size: 15px;
             outline: none;
+            color: #1e1b4b;
+            transition: 0.2s;
+          }
+
+          .input:focus {
+            border-color: #0e7490;
+            box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.15);
           }
 
           .submit-btn {
             height: 46px;
             border-radius: 10px;
             border: none;
-            background: #2b6ef6;
+            background: #3b0f7a;
             color: white;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
+          }
+
+          .submit-btn:hover {
+            background: #0e7490;
           }
 
           .login-redirect {
@@ -242,13 +254,19 @@ export default function ClientRegi({ lang }) {
             display: flex;
             justify-content: center;
             gap: 6px;
+            color: rgba(30, 27, 75, 0.6);
           }
 
           .login-link {
             background: none;
             border: none;
-            color: #2b6ef6;
+            color: #3b0f7a;
             cursor: pointer;
+            font-weight: 600;
+          }
+
+          .login-link:hover {
+            color: #0e7490;
           }
 
           button:disabled {

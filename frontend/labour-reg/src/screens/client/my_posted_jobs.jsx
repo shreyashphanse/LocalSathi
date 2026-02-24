@@ -133,6 +133,7 @@ export default function MyPostedJobs() {
             {job.status === "open" && (
               <div className="actions">
                 <button
+                  // className="cancel"
                   onClick={() => handleCancel(job._id)}
                   disabled={actionLoading === job._id}
                 >
@@ -145,6 +146,7 @@ export default function MyPostedJobs() {
             {job.status === "assigned" && (
               <div className="actions dual">
                 <button
+                  className="cancel"
                   onClick={() => handleCancel(job._id)}
                   disabled={actionLoading === job._id}
                 >
@@ -182,6 +184,7 @@ export default function MyPostedJobs() {
           padding: 16px;
           max-width: 900px;
           margin: auto;
+          background: #f5f3ff;
         }
 
         .top-bar {
@@ -194,32 +197,44 @@ export default function MyPostedJobs() {
           flex: 1;
           height: 44px;
           border-radius: 14px;
-          border: 1px solid rgba(16, 185, 129, 0.25);
+          border: 1px solid rgba(76, 29, 149, 0.15);
           padding: 0 16px;
           outline: none;
+          background: white;
+          color: #1e1b4b;
         }
+
+        .top-bar input:focus {
+          border-color: #0e7490;
+          box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.15);
+        }
+
+        /* ✅ REFRESH BUTTON */
 
         .refresh-btn {
           width: 44px;
           height: 44px;
           border-radius: 12px;
           border: none;
-          background: #10b981;
+          background: #3b0f7a;
           color: white;
           font-size: 18px;
           cursor: pointer;
+          transition: 0.2s;
         }
 
         .refresh-btn:hover {
-          background: #059669;
+          background: #0e7490;
         }
+
+        /* ✅ JOB CARD */
 
         .job-card {
           background: white;
           border-radius: 14px;
           padding: 16px;
           margin-bottom: 12px;
-          border: 1px solid rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(76, 29, 149, 0.15);
         }
 
         .job-header {
@@ -230,26 +245,28 @@ export default function MyPostedJobs() {
 
         h3 {
           margin: 0;
-          color: #065f46;
+          color: #1e1b4b;
         }
+
+        /* ✅ STATUS BADGE */
 
         .status {
           padding: 4px 10px;
           border-radius: 20px;
           font-size: 12px;
           font-weight: 600;
-          background: #ecfdf5;
-          color: #047857;
+          background: rgba(76, 29, 149, 0.08);
+          color: #3b0f7a;
         }
 
         .desc {
           margin: 8px 0;
-          color: #374151;
+          color: rgba(30, 27, 75, 0.75);
         }
 
         .meta {
           font-size: 14px;
-          color: #4b5563;
+          color: rgba(30, 27, 75, 0.6);
           display: flex;
           flex-direction: column;
           gap: 4px;
@@ -264,35 +281,61 @@ export default function MyPostedJobs() {
           gap: 10px;
         }
 
+        /* ✅ BUTTON SYSTEM */
+
         .actions button {
           width: 100%;
           height: 40px;
           border-radius: 10px;
-          border: none;
-          background: #e5e7eb;
+          border: 1px solid rgba(77, 29, 149, 0.78);
+          background: transparent;
           cursor: pointer;
           font-weight: 600;
+          color: #3b0f7a;
+          transition: 0.2s;
         }
 
+        /* Default Action Hover (Primary Feel) */
+
         .actions button:hover {
-          background: #ef4444;
+          background: #3b0f7a;
           color: white;
         }
 
-        .dispute:hover {
-          background: #f59e0b;
+        /* ✅ DELETE / CANCEL TYPE */
+
+        .actions button.cancel:hover {
+          background: #dc2626;
+          border-color: #dc2626;
+          color: white;
+        }
+
+        /* ✅ MAKE PAYMENT */
+
+        .actions button.payment:hover {
+          background: #059669;
+          border-color: #059669;
+          color: white;
+        }
+
+        /* ✅ DISPUTE BUTTON */
+
+        .actions button.dispute:hover {
+          background: #d97706;
+          border-color: #d97706;
           color: white;
         }
 
         .empty {
           text-align: center;
-          color: #6b7280;
+          color: rgba(30, 27, 75, 0.6);
           font-weight: 600;
         }
 
         .state {
           padding: 40px;
           text-align: center;
+          color: rgba(30, 27, 75, 0.6);
         }
       `}</style>
     </div>
