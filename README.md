@@ -115,14 +115,14 @@ Includes:
 
 ### **Database**
 
-- MongoDB Atlas / Local MongoDB
+- MongoDB Atlas
 
 ---
 
 ### **Deployment**
 
 - Render (Backend)
-- Static Hosting / Render / Netlify (Frontend)
+- Static Hosting / Render (Frontend)
 
 ---
 
@@ -191,19 +191,6 @@ To create a **minimal, scalable, locally practical service marketplace** optimiz
 ✔ Simplicity  
 ✔ Reliability  
 ✔ Trust building
-
----
-
-## 👨‍💻 Development Team
-
-**Lead Developer & System Designer**  
-Shreyash Sunil Phanse
-
-**Co-Developer**  
-Jaden
-
-**Field Operations / Verification**  
-Vishal & Rohit
 
 ---
 
