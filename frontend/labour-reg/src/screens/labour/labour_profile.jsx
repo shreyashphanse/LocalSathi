@@ -407,7 +407,6 @@ export default function LabourProfileTop({ lang }) {
       formData.append("address", address);
       formData.append("gender", gender);
       formData.append("dob", dob);
-
       formData.append("stationFrom", stationFrom);
       formData.append("stationTo", stationTo);
 

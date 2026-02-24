@@ -289,12 +289,12 @@ export default function ClientProfileTop({ lang }) {
 
   const [editing, setEditing] = useState(false);
   const [originalData, setOriginalData] = useState(null);
-
+  const [reliabilityScore, setReliabilityScore] = useState(50);
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
-
+  const ratingStars = "⭐".repeat(Math.round(reliabilityScore / 20));
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("");
@@ -317,7 +317,7 @@ export default function ClientProfileTop({ lang }) {
       setAddress(data.address || "");
       setGender(data.gender || "");
       setDob(data.dob ? data.dob.substring(0, 10) : "");
-
+      setReliabilityScore(data.reliabilityScore || 50);
       setPhone(data.phone || "");
       setEmail(data.email || "");
       setVerificationStatus(data.verificationStatus || "unverified");
@@ -467,10 +467,7 @@ export default function ClientProfileTop({ lang }) {
               </div>
 
               <div className="rating">
-                ⭐⭐⭐⭐⭐
-                <span className="rating-note">
-                  ({t(lang, "basedOnReliability")})
-                </span>
+                {ratingStars} ({reliabilityScore})
               </div>
             </div>
           </div>

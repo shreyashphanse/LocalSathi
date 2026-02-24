@@ -89,6 +89,7 @@ export default function MyAcceptedJobs() {
       const formData = new FormData();
       formData.append("jobId", jobId);
       formData.append("text", reason);
+      formData.append("type", "labour");
 
       if (evidenceFile[jobId]) {
         formData.append("evidence", evidenceFile[jobId]);
@@ -102,6 +103,7 @@ export default function MyAcceptedJobs() {
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Dispute failed");
+      console.log("FULL ERROR:", err.response?.data);
     } finally {
       setActionLoading(null);
     }
