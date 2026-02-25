@@ -2,106 +2,207 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormCard from "../components/FormCard";
 import { t } from "../utils/i18n";
+import animeBg from "../assets/animebg6.jpg";
 
 export default function StartScreen({ lang }) {
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <div className="page-root">
-      <FormCard title={t(lang, "welcome")}>
-        {!showOptions ? (
-          <div className="button-group">
-            <button
-              className="btn register"
-              onClick={() => setShowOptions(true)}
-            >
-              {t(lang, "register")}
+    <div
+      className="page-root"
+      style={{
+        backgroundImage: `url(${animeBg})`,
+      }}
+    >
+      <FormCard
+        title={t(lang, "LocalSathi")}
+        subtitle={t(lang, "Welcome User!!")}
+      >
+        <div className={`panel ${showOptions ? "expanded" : ""}`}>
+          {/* PRIMARY BUTTONS */}
+
+          <button
+            className="btn register"
+            onClick={() => setShowOptions(!showOptions)}
+          >
+            <span>{t(lang, "register")}</span>
+          </button>
+
+          {/* EXPANDABLE AREA */}
+
+          <div className={`expand-area ${showOptions ? "show" : ""}`}>
+            <button className="btn client" onClick={() => navigate("/client")}>
+              <span>{t(lang, "customer")}</span>
             </button>
 
-            <button className="btn login" onClick={() => navigate("/login")}>
-              {t(lang, "login")}
+            <button className="btn labour" onClick={() => navigate("/labour")}>
+              <span>{t(lang, "serviceProvider")}</span>
             </button>
           </div>
-        ) : (
-          <div className="choice-section">
-            <h3 className="question">{t(lang, "areYouA")}</h3>
 
-            <div className="button-group">
-              <button
-                className="btn client"
-                onClick={() => navigate("/client")}
-              >
-                {t(lang, "customer")}
-              </button>
-
-              <button
-                className="btn labour"
-                onClick={() => navigate("/labour")}
-              >
-                {t(lang, "serviceProvider")}
-              </button>
-            </div>
-          </div>
-        )}
+          <button className="btn login" onClick={() => navigate("/login")}>
+            <span>{t(lang, "login")}</span>
+          </button>
+        </div>
       </FormCard>
 
-      <style>{`
+      <style jsx>{`
         .page-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 20px;
-          background: #f3f6ff;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
         }
 
-        .button-group {
+        /* PANEL */
+
+        .panel {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          margin-top: 10px;
+          gap: 18px; /* slightly more breathing space */
+          align-items: center; /* critical for square layout */
         }
 
+        /* ✅ TRUE SQUARE BUTTON */
+
         .btn {
-          height: 46px;
-          border-radius: 10px;
+          width: 200px;
+          height: 140px; /* 🔥 Perfect square */
+          border-radius: 22px;
           border: none;
-          color: #fff;
           font-weight: 600;
           font-size: 15px;
           cursor: pointer;
-          transition: transform 0.15s ease;
+          transition: 0.25s ease;
+          letter-spacing: 0.3px;
+          position: relative;
+          overflow: hidden;
+          color: white;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
         }
 
-        .btn:active {
-          transform: scale(0.97);
+        /* ✅ IMAGE LAYER */
+
+        .btn::before {
+          content: "frontend/labour-reg/src/assets/Regi.png";
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center;
+          opacity: 0.5; /* ✅ YOUR 50% OPACITY */
+          z-index: 1;
         }
 
-        .register {
-          background-color: #facc15;
-          color: #000;
+        /* ✅ GRADIENT LAYER */
+
+        .btn::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 2;
         }
 
-        .login {
-          background-color: #2563eb;
+        /* ✅ TEXT ALWAYS ON TOP */
+
+        .btn span {
+          position: relative;
+          z-index: 3;
+          font-size: 24px;
+          text-transform: uppercase;
+          font-size: 22px; /* 🔥 Big */
+          font-weight: 800; /* 🔥 Bold */
+          letter-spacing: 0.5px;
+          text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
         }
 
-        .client {
-          background-color: #f59e0b;
-          color: #000;
+        /* REGISTER */
+
+        .register::before {
+          background-image: url("/images/register.jpg");
         }
 
-        .labour {
-          background-color: #e85d04;
-          color: #000;
+        .register::after {
+          background: linear-gradient(135deg, #68027c, #ff04f2);
         }
 
-        .question {
-          font-size: 16px;
-          font-weight: 600;
-          color: #1747c8;
-          margin-bottom: 10px;
+        /* LOGIN */
+
+        .login::before {
+          background-image: url("/images/login.jpg");
+        }
+
+        .login::after {
+          background: linear-gradient(135deg, #0e5700, #1eff00);
+        }
+
+        /* CLIENT */
+
+        .client::before {
+          background-image: url("/images/client.jpg");
+        }
+
+        .client::after {
+          background: linear-gradient(135deg, #05eeff, #48008b);
+        }
+
+        /* LABOUR */
+
+        .labour::before {
+          background-image: url("/images/labour.jpg");
+        }
+
+        .labour::after {
+          background: linear-gradient(135deg, #ff7402, #a50303);
+        }
+
+        /* HOVER = PREMIUM FEEL */
+
+        .btn:hover {
+          transform: translateY(-4px) scale(1.03);
+          box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        /* EXPANDABLE AREA */
+
+        .expand-area {
+          display: flex;
+          gap: 16px;
+          overflow: hidden;
+          max-height: 0;
+          opacity: 0;
+          transform: translateY(-10px);
+          transition: all 0.4s ease;
+        }
+
+        .expand-area.show {
+          max-height: 200px;
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .form-card h2 {
+          font-size: 32px;
+          font-weight: 900;
+          letter-spacing: 0.8px;
+
+          background: linear-gradient(135deg, #360081, #002e31);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+
+          text-align: center;
+        }
+
+        .form-card p {
+          font-size: 18px;
+          color: rgba(23, 19, 80, 0.89);
           text-align: center;
         }
       `}</style>

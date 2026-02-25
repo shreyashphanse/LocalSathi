@@ -44,7 +44,7 @@
   "invalidOtp": "Enter valid OTP (4-6 digits)",
   "otpSent": "OTP sent to",
   "loginSuccess": "Login successful (simulation)",
-  "clientRegistration": "Client Registration",
+  "clientRegistration": "Customer Registration",
   "name": "Name",
   "dob": "Date of Birth",
   "enterName": "Enter full name",
