@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import FormCard from "../../components/FormCard";
+import { useLanguage } from "../../hooks/useLanguage";
 import { t } from "../../utils/i18n";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -283,7 +284,8 @@ const styles = `
   }
 `;
 
-export default function ClientProfileTop({ lang }) {
+export default function ClientProfileTop() {
+  const { lang } = useLanguage();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -339,7 +341,7 @@ export default function ClientProfileTop({ lang }) {
 
   const handleSave = async () => {
     try {
-      if (!fullName.trim()) return alert("Name required");
+      if (!fullName.trim()) return alert(t(lang, "nameRequired"));
 
       const formData = new FormData(); // ✅ FIRST
 
@@ -364,10 +366,10 @@ export default function ClientProfileTop({ lang }) {
       });
 
       setEditing(false);
-      alert("Profile Updated");
+      alert(t(lang, "profileUpdated"));
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Update failed");
+      alert(err.response?.data?.message || t(lang, "updateFailed"));
     }
   };
 
@@ -463,7 +465,7 @@ export default function ClientProfileTop({ lang }) {
               <div className="email">{email}</div>
 
               <div className="status-note">
-                {t(lang, "status")}: {verificationStatus}
+                {t(lang, "status")}: {t(lang, verificationStatus)}
               </div>
 
               <div className="rating">
@@ -547,7 +549,7 @@ export default function ClientProfileTop({ lang }) {
             </div>
 
             <button className="logout-btn" onClick={handleLogout}>
-              Logout
+              {t(lang, "logout")}
             </button>
           </div>
         </div>

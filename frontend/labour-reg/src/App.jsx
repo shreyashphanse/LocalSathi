@@ -26,12 +26,14 @@ import PaymentPage from "./screens/client/payment_page";
 import AdminLogin from "./screens/admin/admin_login";
 import AdminPanel from "./screens/admin/admin_panel";
 import RequireAdmin from "./components/RequireAdmin";
+import { useLanguage } from "./hooks/useLanguage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   const { user } = useAuth();
-  const [lang, setLang] = useState("en");
+
+  const { lang, setLang } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
 
   // ✅ POSITION STATE (NEW)
@@ -137,7 +139,7 @@ export default function App() {
       {user?.role === "labour" && <LabourNavbar />}
 
       <Routes>
-        <Route path="/" element={<StartScreen lang={lang} />} />
+        <Route path="/" element={<StartScreen />} />
         <Route path="/labour" element={<LabourRegi lang={lang} />} />
         <Route path="/client" element={<ClientRegi lang={lang} />} />
         <Route path="/login" element={<Login lang={lang} />} />

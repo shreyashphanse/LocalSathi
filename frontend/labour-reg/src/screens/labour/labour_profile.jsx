@@ -5,18 +5,19 @@ import { t } from "../../utils/i18n";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
+import { useLanguage } from "../../hooks/useLanguage";
 
 const COMMON_SKILLS = [
-  "Plumbing",
-  "Electrician",
-  "Carpenter",
-  "Painter",
-  "Cleaning",
-  "AC Repair",
-  "Welder",
-  "Mechanic",
-  "Driver",
-  "Helper",
+  "plumbing",
+  "electrician",
+  "carpenter",
+  "painter",
+  "cleaning",
+  "acRepair",
+  "welder",
+  "mechanic",
+  "driver",
+  "helper",
 ];
 
 const STATIONS = ["Vasai", "Nalasopara", "Virar"];
@@ -311,7 +312,8 @@ const styles = `
 }
 `;
 
-export default function LabourProfileTop({ lang }) {
+export default function LabourProfileTop() {
+  const { lang } = useLanguage();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -386,16 +388,16 @@ export default function LabourProfileTop({ lang }) {
   const handleSave = async () => {
     const missingFields = [];
 
-    if (!fullName.trim()) missingFields.push("Full Name");
-    if (!address.trim()) missingFields.push("Address");
-    if (!gender) missingFields.push("Gender");
-    if (!dob) missingFields.push("DOB");
-    if (!stationFrom) missingFields.push("Station From");
-    if (!stationTo) missingFields.push("Station To");
-    if (!skills.length) missingFields.push("Skills");
+    if (!fullName.trim()) missingFields.push(t(lang, "fullName"));
+    if (!address.trim()) missingFields.push(t(lang, "address"));
+    if (!gender) missingFields.push(t(lang, "gender"));
+    if (!dob) missingFields.push(t(lang, "dob"));
+    if (!stationFrom) missingFields.push(t(lang, "stationFrom"));
+    if (!stationTo) missingFields.push(t(lang, "stationTo"));
+    if (!skills.length) missingFields.push(t(lang, "skills"));
 
     if (missingFields.length) {
-      return alert(`Missing fields:\n${missingFields.join("\n")}`);
+      alert(`${t(lang, "missingFields")}:\n${missingFields.join("\n")}`);
     }
 
     /* ✅ SAFE TO SAVE */
@@ -419,10 +421,10 @@ export default function LabourProfileTop({ lang }) {
       await api.patch("/users/profile", formData);
 
       setEditing(false);
-      alert("Profile Updated");
+      alert(t(lang, "profileUpdated"));
     } catch (err) {
       console.error(err);
-      alert("Update failed");
+      alert(t(lang, "updateFailed"));
     }
   };
 
@@ -459,7 +461,7 @@ export default function LabourProfileTop({ lang }) {
 
         <div className="actions">
           <button
-            className={`btn ${editing ? "save" : "edit"}`}
+            className={`btn ${editing ? "Save" : "Edit"}`}
             onClick={() => {
               if (editing) handleSave();
               else {
@@ -476,11 +478,11 @@ export default function LabourProfileTop({ lang }) {
               }
             }}
           >
-            {editing ? "Save" : "Edit"}
+            {editing ? t(lang, "save") : t(lang, "edit")}
           </button>
           {editing && (
             <button className="btn cancel" onClick={handleCancel}>
-              Cancel
+              {t(lang, "cancel")}
             </button>
           )}
         </div>
@@ -499,7 +501,10 @@ export default function LabourProfileTop({ lang }) {
             <div className="identity-block">
               <div className="display-name">{fullName}</div>
               <div className="meta-text">{phone}</div>
-              <div className="meta-text">Status: {verificationStatus}</div>
+              <div className="meta-text">
+                {" "}
+                {t(lang, "status")}: {t(lang, verificationStatus)}
+              </div>
               <div className="rating">
                 {ratingStars} ({reliabilityScore})
               </div>
@@ -516,7 +521,7 @@ export default function LabourProfileTop({ lang }) {
             />
 
             <label className="field">
-              <span className="label-text">Full Name</span>
+              <span className="label-text">{t(lang, "fullName")}</span>
               <input
                 value={fullName}
                 readOnly={!editing}
@@ -526,7 +531,7 @@ export default function LabourProfileTop({ lang }) {
             </label>
 
             <label className="field">
-              <span className="label-text">Address</span>
+              <span className="label-text">{t(lang, "primaryAddress")}</span>
               <input
                 value={address}
                 readOnly={!editing}
@@ -537,7 +542,7 @@ export default function LabourProfileTop({ lang }) {
 
             <div className="row">
               <label className="field">
-                <span className="label-text">DOB</span>
+                <span className="label-text">{t(lang, "dob")}</span>
                 <input
                   type="date"
                   value={dob}
@@ -548,27 +553,27 @@ export default function LabourProfileTop({ lang }) {
               </label>
 
               <label className="field">
-                <span className="label-text">Gender</span>
+                <span className="label-text">{t(lang, "gender")}</span>
                 <select
                   value={gender}
                   disabled={!editing}
                   onChange={(e) => setGender(e.target.value)}
                   className="input"
                 >
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="">{t(lang, "select")}</option>
+                  <option value="male">{t(lang, "male")}</option>
+                  <option value="female">{t(lang, "female")}</option>
                 </select>
               </label>
             </div>
 
             <div className="age-box">
-              Age: <strong>{calculateAge(dob)}</strong>
+              {t(lang, "age")}:<strong>{calculateAge(dob)}</strong>
             </div>
 
             <div className="row">
               <label className="field">
-                <span className="label-text">Station From</span>
+                <span className="label-text">{t(lang, "fromStation")}</span>
                 <select
                   value={stationFrom}
                   disabled={!editing}
@@ -583,7 +588,7 @@ export default function LabourProfileTop({ lang }) {
               </label>
 
               <label className="field">
-                <span className="label-text">Station To</span>
+                <span className="label-text">{t(lang, "toStation")}</span>
                 <select
                   value={stationTo}
                   disabled={!editing}
@@ -599,12 +604,12 @@ export default function LabourProfileTop({ lang }) {
             </div>
 
             <label className="field">
-              <span className="label-text">Skills</span>
+              <span className="label-text">{t(lang, "skills")}</span>
 
               <div className="skills-box">
                 {skills.map((skill) => (
                   <div key={skill} className="skill-tag">
-                    {skill}
+                    {t(lang, skill)}{" "}
                     {editing && (
                       <span onClick={() => removeSkill(skill)}>✕</span>
                     )}
@@ -616,7 +621,7 @@ export default function LabourProfileTop({ lang }) {
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
                     className="skill-input"
-                    placeholder="Search skills..."
+                    placeholder={t(lang, "searchSkill")}
                   />
                 )}
               </div>
@@ -629,7 +634,7 @@ export default function LabourProfileTop({ lang }) {
                       onClick={() => addSkill(skill)}
                       className="dropdown-item"
                     >
-                      {skill}
+                      {t(lang, skill)}{" "}
                     </div>
                   ))}
                 </div>
@@ -637,7 +642,7 @@ export default function LabourProfileTop({ lang }) {
             </label>
 
             <button className="logout-btn" onClick={handleLogout}>
-              Logout
+              {t(lang, "logout")}
             </button>
           </div>
         </div>

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function ClientDashboard() {
+  const { lang } = useLanguage();
   const [stats, setStats] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,49 +34,50 @@ export default function ClientDashboard() {
       setJobs(openJobs);
     } catch (err) {
       console.error(err);
-      setError("Failed to load dashboard");
+      setError(t(lang, "dashboardLoadFailed"));
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="state">Loading dashboard...</div>;
+  if (loading)
+    return <div className="state">{t(lang, "loadingDashboard")}</div>;
   if (error) return <div className="state">{error}</div>;
 
   return (
     <div className="dash-root">
       <div className="dash-card">
-        <h2>Dashboard</h2>
-
+        <h2>{t(lang, "dashboard")}</h2>
         <div className="stats-grid">
           <div className="stat-box">
-            <span>Total Jobs Posted</span>
+            <span>{t(lang, "totalJobsPosted")}</span>
             <b>{stats.totalJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Active Jobs</span>
+            <span>{t(lang, "activeJobs")}</span>
             <b>{stats.activeJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Completed</span>
+            <span>{t(lang, "completedJobs")}</span>
             <b>{stats.completedJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Cancelled</span>
-            <b>{stats.cancelledJobs}</b>
+            <span>{t(lang, "cancelledJobs")}</span> <b>{stats.cancelledJobs}</b>
           </div>
         </div>
 
-        <button onClick={fetchData}>🔄 Refresh</button>
+        <button onClick={fetchData}>🔄 {t(lang, "refresh")}</button>
 
         {/* ✅ OPEN JOBS ONLY */}
 
         {jobs.length === 0 ? (
           <div className="empty-card">
-            <button onClick={() => navigate("/postjob")}>Post New Job</button>
+            <button onClick={() => navigate("/postjob")}>
+              {t(lang, "postNewJob")}
+            </button>
           </div>
         ) : (
           jobs.map((job) => (

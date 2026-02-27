@@ -46,7 +46,7 @@ export default function ClientNavbar() {
         </button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .nav-root {
           position: fixed;
           bottom: 12px;

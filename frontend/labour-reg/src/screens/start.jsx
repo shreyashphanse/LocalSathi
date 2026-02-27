@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import FormCard from "../components/FormCard";
 import { t } from "../utils/i18n";
 import animeBg from "../assets/animebg6.jpg";
+import { useLanguage } from "../hooks/useLanguage";
 
-export default function StartScreen({ lang }) {
+export default function StartScreen() {
+  const { lang } = useLanguage();
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
 
@@ -15,10 +17,7 @@ export default function StartScreen({ lang }) {
         backgroundImage: `url(${animeBg})`,
       }}
     >
-      <FormCard
-        title={t(lang, "LocalSathi")}
-        subtitle={t(lang, "Welcome User!!")}
-      >
+      <FormCard title={t(lang, "appName")} subtitle={t(lang, "welcomeUser")}>
         <div className={`panel ${showOptions ? "expanded" : ""}`}>
           {/* PRIMARY BUTTONS */}
 
@@ -47,7 +46,7 @@ export default function StartScreen({ lang }) {
         </div>
       </FormCard>
 
-      <style jsx>{`
+      <style>{`
         .page-root {
           min-height: 100vh;
           display: flex;

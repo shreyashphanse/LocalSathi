@@ -68,7 +68,7 @@ export default function PaymentPage() {
         </button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .payment-root {
           min-height: 100vh;
           display: flex;

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function MyPostedJobs() {
   const navigate = useNavigate();
@@ -9,6 +11,7 @@ export default function MyPostedJobs() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [actionLoading, setActionLoading] = useState(null);
+  const { lang } = useLanguage();
 
   useEffect(() => {
     fetchJobs();
@@ -23,7 +26,7 @@ export default function MyPostedJobs() {
       setJobs(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load jobs");
+      setError(t(lang, "jobsLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -40,7 +43,7 @@ export default function MyPostedJobs() {
       setJobs(jobs.filter((job) => job._id !== jobId));
     } catch (err) {
       console.error(err);
-      alert("Cancellation failed");
+      alert(t(lang, "cancellationFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -50,10 +53,10 @@ export default function MyPostedJobs() {
 
   const handleDispute = async (jobId) => {
     try {
-      const reason = prompt("Enter dispute reason:");
+      const reason = prompt(t(lang, "enterDisputeReason"));
 
       if (!reason || reason.length < 10) {
-        alert("Reason must be at least 10 characters");
+        alert(t(lang, "disputeReasonLength"));
         return;
       }
 
@@ -64,12 +67,11 @@ export default function MyPostedJobs() {
         text: reason,
       });
 
-      alert("Dispute raised");
-
+      alert(t(lang, "disputeRaised"));
       fetchJobs();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Dispute failed");
+      alert(err.response?.data?.message || t(lang, "disputeFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -81,7 +83,7 @@ export default function MyPostedJobs() {
       .includes(search.toLowerCase()),
   );
 
-  if (loading) return <div className="state">Loading jobs...</div>;
+  if (loading) return <div className="state">{t(lang, "loadingJobs")}</div>;
 
   if (error) return <div className="state">{error}</div>;
 
@@ -89,7 +91,7 @@ export default function MyPostedJobs() {
     <div className="feed-root">
       <div className="top-bar">
         <input
-          placeholder="Search my jobs..."
+          placeholder={t(lang, "searchMyJobs")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -100,7 +102,7 @@ export default function MyPostedJobs() {
       </div>
 
       {filteredJobs.length === 0 ? (
-        <div className="job-card empty">No jobs found</div>
+        <div className="job-card empty">{t(lang, "noJobsFound")}</div>
       ) : (
         filteredJobs.map((job) => (
           <div key={job._id} className="job-card">
@@ -113,17 +115,18 @@ export default function MyPostedJobs() {
 
             <div className="meta">
               <div>
-                <b>Skill:</b> {job.skillRequired}
+                <b>{t(lang, "skill")}:</b> {job.skillRequired}
               </div>
               <div>
-                <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
+                <b>{t(lang, "stations")}:</b>
+                {job.stationRange.from} → {job.stationRange.to}
               </div>
               <div>
-                <b>Budget:</b> ₹{job.budget}
+                <b>{t(lang, "budget")}:</b>₹{job.budget}
               </div>
               {job.paymentDeadline && job.paymentStatus === "pending" && (
                 <div>
-                  <b>Payment Deadline:</b>{" "}
+                  <b>{t(lang, "paymentDeadline")}:</b>{" "}
                   {new Date(job.paymentDeadline).toLocaleTimeString()}
                 </div>
               )}
@@ -137,7 +140,9 @@ export default function MyPostedJobs() {
                   onClick={() => handleCancel(job._id)}
                   disabled={actionLoading === job._id}
                 >
-                  {actionLoading === job._id ? "Processing..." : "Cancel"}
+                  {actionLoading === job._id
+                    ? t(lang, "processing")
+                    : t(lang, "cancel")}{" "}
                 </button>
               </div>
             )}
@@ -150,7 +155,7 @@ export default function MyPostedJobs() {
                   onClick={() => handleCancel(job._id)}
                   disabled={actionLoading === job._id}
                 >
-                  Cancel
+                  {t(lang, "cancel")}
                 </button>
 
                 <button
@@ -158,7 +163,7 @@ export default function MyPostedJobs() {
                   onClick={() => handleDispute(job._id)}
                   disabled={actionLoading === job._id}
                 >
-                  Dispute
+                  {t(lang, "dispute")}
                 </button>
               </div>
             )}
@@ -170,7 +175,7 @@ export default function MyPostedJobs() {
                   className="payment"
                   onClick={() => navigate(`/payment/${job.paymentId}`)}
                 >
-                  Make Payment
+                  {t(lang, "makePayment")}
                 </button>
               </div>
             )}
@@ -178,7 +183,7 @@ export default function MyPostedJobs() {
         ))
       )}
 
-      <style jsx>{`
+      <style>{`
         .feed-root {
           min-height: 100vh;
           padding: 16px;

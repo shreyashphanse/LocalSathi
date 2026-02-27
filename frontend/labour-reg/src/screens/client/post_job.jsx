@@ -1,17 +1,19 @@
 import { useState } from "react";
 import api from "../../utils/api";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 const COMMON_SKILLS = [
-  "Plumbing",
-  "Electrician",
-  "Carpenter",
-  "Painter",
-  "Cleaning",
-  "AC Repair",
-  "Welder",
-  "Mechanic",
-  "Driver",
-  "Helper",
+  "plumbing",
+  "electrician",
+  "carpenter",
+  "painter",
+  "cleaning",
+  "acRepair",
+  "welder",
+  "mechanic",
+  "driver",
+  "helper",
 ];
 
 const STATIONS = ["Vasai", "Nalasopara", "Virar"];
@@ -25,7 +27,7 @@ export default function PostJob() {
     to: "",
     budget: "",
   });
-
+  const { lang } = useLanguage();
   const [skillInput, setSkillInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -44,12 +46,17 @@ export default function PostJob() {
 
     const { title, description, skillRequired, from, to, budget } = form;
 
-    if (!title.trim()) return alert("Title required");
-    if (!description.trim()) return alert("Description required");
-    if (!skillRequired) return alert("Skill required");
-    if (!from) return alert("From station required");
-    if (!to) return alert("To station required");
-    if (!budget) return alert("Budget required");
+    if (!title.trim()) return alert(t(lang, "titleRequired"));
+
+    if (!description.trim()) return alert(t(lang, "descriptionRequired"));
+
+    if (!skillRequired) return alert(t(lang, "skillRequired"));
+
+    if (!from) return alert(t(lang, "fromStationRequired"));
+
+    if (!to) return alert(t(lang, "toStationRequired"));
+
+    if (!budget) return alert(t(lang, "budgetRequired"));
 
     try {
       setLoading(true);
@@ -63,7 +70,7 @@ export default function PostJob() {
         budget: Number(budget),
       });
 
-      alert("Job posted successfully");
+      alert(t(lang, "jobPostedSuccess"));
 
       setForm({
         title: "",
@@ -75,7 +82,7 @@ export default function PostJob() {
       });
     } catch (err) {
       console.error(err);
-      alert("Job creation failed");
+      alert(t(lang, "jobCreationFailed"));
     } finally {
       setLoading(false);
     }
@@ -84,16 +91,15 @@ export default function PostJob() {
   return (
     <div className="post-root">
       <form className="post-card" onSubmit={handleSubmit}>
-        <h2>Post Job</h2>
-
+        <h2>{t(lang, "postJob")}</h2>
         <input
-          placeholder="Job Title"
+          placeholder={t(lang, "jobTitle")}
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
 
         <textarea
-          placeholder="Job Description"
+          placeholder={t(lang, "jobDescription")}
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
@@ -102,7 +108,7 @@ export default function PostJob() {
 
         <div className="field">
           <input
-            placeholder="Search Skill..."
+            placeholder={t(lang, "searchSkill")}
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
           />
@@ -115,7 +121,7 @@ export default function PostJob() {
                   onClick={() => selectSkill(skill)}
                   className="dropdown-item"
                 >
-                  {skill}
+                  {t(lang, skill)}
                 </div>
               ))}
             </div>
@@ -123,7 +129,7 @@ export default function PostJob() {
 
           {form.skillRequired && (
             <div className="selected-skill">
-              Selected: <b>{form.skillRequired}</b>
+              {t(lang, "selected")} <b>{t(lang, form.skillRequired)}</b>
             </div>
           )}
         </div>
@@ -135,7 +141,7 @@ export default function PostJob() {
             value={form.from}
             onChange={(e) => setForm({ ...form, from: e.target.value })}
           >
-            <option value="">From Station</option>
+            <option value="">{t(lang, "fromStation")}</option>
             {STATIONS.map((s) => (
               <option key={s}>{s}</option>
             ))}
@@ -145,7 +151,7 @@ export default function PostJob() {
             value={form.to}
             onChange={(e) => setForm({ ...form, to: e.target.value })}
           >
-            <option value="">To Station</option>
+            <option value="">{t(lang, "toStation")}</option>{" "}
             {STATIONS.map((s) => (
               <option key={s}>{s}</option>
             ))}
@@ -154,17 +160,17 @@ export default function PostJob() {
 
         <input
           type="number"
-          placeholder="Budget"
+          placeholder={t(lang, "budget")}
           value={form.budget}
           onChange={(e) => setForm({ ...form, budget: e.target.value })}
         />
 
         <button disabled={loading}>
-          {loading ? "Posting..." : "Post Job"}
+          {loading ? t(lang, "posting") : t(lang, "postJob")}{" "}
         </button>
       </form>
 
-      <style jsx>{`
+      <style>{`
         .post-root {
           min-height: 100vh;
           display: flex;

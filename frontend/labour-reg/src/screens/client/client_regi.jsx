@@ -3,10 +3,12 @@ import FormCard from "../../components/FormCard";
 import { ensureMobileFocus } from "../../utils/mobileFocus";
 import { useNavigate } from "react-router-dom";
 import { t } from "../../utils/i18n";
+import { useLanguage } from "../../hooks/useLanguage";
 
 import api from "../../utils/api"; // ✅ ADDED
 
-export default function ClientRegi({ lang }) {
+export default function ClientRegi() {
+  const { lang } = useLanguage();
   const formRef = useRef(null);
   const navigate = useNavigate();
 
@@ -77,7 +79,7 @@ export default function ClientRegi({ lang }) {
 
     if (!password.trim()) {
       // ✅ ADDED
-      alert("Password required");
+      alert(t(lang, "passwordRequired"));
       return;
     }
 
@@ -98,7 +100,7 @@ export default function ClientRegi({ lang }) {
       navigate("/login");
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Registration failed");
+      alert(err.response?.data?.message || t(lang, "registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -150,10 +152,10 @@ export default function ClientRegi({ lang }) {
           {/* ✅ PASSWORD FIELD ADDED */}
 
           <label className="field">
-            <span className="label-text">Password</span>
+            <span className="label-text">{t(lang, "password")}</span>
             <input
               type="password"
-              placeholder="Enter Password"
+              placeholder={t(lang, "enterPassword")}
               onFocus={ensureMobileFocus}
               required
               className="input"
@@ -175,7 +177,7 @@ export default function ClientRegi({ lang }) {
           </label>
 
           <button className="submit-btn" type="submit" disabled={loading}>
-            {loading ? "Registering..." : t(lang, "register")}
+            {loading ? t(lang, "registering") : t(lang, "register")}
           </button>
 
           <div className="login-redirect">

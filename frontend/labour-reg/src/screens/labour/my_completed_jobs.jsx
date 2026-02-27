@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function MyCompletedJobs() {
+  const { lang } = useLanguage();
   const navigate = useNavigate();
 
   const [jobs, setJobs] = useState([]);
@@ -24,7 +27,7 @@ export default function MyCompletedJobs() {
       setJobs(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load completed jobs");
+      setError(t(lang, "completedJobsLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -36,12 +39,11 @@ export default function MyCompletedJobs() {
 
       await api.patch(`/payments/${paymentId}/confirm`);
 
-      alert("Payment verified");
-
+      alert(t(lang, "paymentVerified"));
       fetchJobs();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Confirmation failed");
+      alert(err.response?.data?.message || t(lang, "confirmationFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -49,10 +51,9 @@ export default function MyCompletedJobs() {
 
   const disputePayment = async (paymentId) => {
     try {
-      const reason = prompt("Enter dispute reason:");
-
+      const reason = prompt(t(lang, "enterDisputeReason"));
       if (!reason || reason.length < 10) {
-        alert("Reason must be at least 10 characters");
+        alert(t(lang, "disputeReasonLength"));
         return;
       }
 
@@ -60,12 +61,11 @@ export default function MyCompletedJobs() {
 
       await api.patch(`/payments/${paymentId}/dispute`, { reason });
 
-      alert("Payment disputed");
-
+      alert(t(lang, "paymentDisputed"));
       fetchJobs();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Dispute failed");
+      alert(err.response?.data?.message || t(lang, "disputeFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -77,7 +77,7 @@ export default function MyCompletedJobs() {
       .includes(search.toLowerCase()),
   );
 
-  if (loading) return <div className="state">Loading jobs...</div>;
+  if (loading) return <div className="state">{t(lang, "loadingJobs")}</div>;
 
   if (error) return <div className="state">{error}</div>;
 
@@ -86,7 +86,7 @@ export default function MyCompletedJobs() {
       {/* ✅ TOP BAR */}
       <div className="top-bar">
         <input
-          placeholder="Search completed jobs..."
+          placeholder={t(lang, "searchCompletedJobs")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -98,26 +98,28 @@ export default function MyCompletedJobs() {
 
       {/* ✅ EMPTY STATE */}
       {filteredJobs.length === 0 ? (
-        <div className="job-card empty">No completed jobs</div>
+        <div className="job-card empty">{t(lang, "noCompletedJobs")}</div>
       ) : (
         filteredJobs.map((job) => (
           <div key={job._id} className="job-card">
             <div className="job-header">
               <h3>{job.title}</h3>
-              <span className="status completed">Completed</span>
+              <span className="status completed">{t(lang, "completed")}</span>
             </div>
 
             <p className="desc">{job.description}</p>
 
             <div className="meta">
               <div>
-                <b>Skill:</b> {job.skillRequired}
+                <b>{t(lang, "skill")}:</b>
+                {t(lang, job.skillRequired)}
               </div>
               <div>
-                <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
+                <b>{t(lang, "stations")}:</b>
+                {job.stationRange.from} → {job.stationRange.to}
               </div>
               <div>
-                <b>Budget:</b> ₹{job.budget}
+                <b>{t(lang, "budget")}:</b> ₹{job.budget}
               </div>
             </div>
 
@@ -127,7 +129,7 @@ export default function MyCompletedJobs() {
                 className="rate-btn"
                 onClick={() => navigate(`/ratings/${job._id}`)}
               >
-                Rate
+                {t(lang, "rate")}
               </button>
             </div>
 
@@ -140,8 +142,8 @@ export default function MyCompletedJobs() {
                   disabled={actionLoading === job.paymentId}
                 >
                   {actionLoading === job.paymentId
-                    ? "Processing..."
-                    : "Confirm Payment"}
+                    ? t(lang, "processing")
+                    : t(lang, "confirmPayment")}
                 </button>
 
                 <button
@@ -149,7 +151,7 @@ export default function MyCompletedJobs() {
                   onClick={() => disputePayment(job.paymentId)}
                   disabled={actionLoading === job.paymentId}
                 >
-                  Raise Dispute
+                  {t(lang, "raiseDispute")}
                 </button>
               </div>
             )}

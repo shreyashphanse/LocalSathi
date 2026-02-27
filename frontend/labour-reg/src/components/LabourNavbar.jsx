@@ -54,7 +54,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .nav-root {
           position: fixed;
           bottom: 12px;

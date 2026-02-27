@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function LabourDashboard() {
+  const { lang } = useLanguage();
   const [stats, setStats] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,58 +28,60 @@ export default function LabourDashboard() {
       setJobs(jobsRes.data.slice(0, 3)); // ✅ Latest 3
     } catch (err) {
       console.error(err);
-      setError("Failed to load dashboard");
+      setError(t(lang, "dashboardLoadFailed"));
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="state">Loading dashboard...</div>;
+  if (loading)
+    return <div className="state">{t(lang, "loadingDashboard")}</div>;
   if (error) return <div className="state">{error}</div>;
 
   return (
     <div className="dash-root">
       <div className="dash-card">
-        <h2>Dashboard</h2>
+        <h2>{t(lang, "dashboard")}</h2>
 
         {/* ✅ STATS */}
         <div className="stats-grid">
           <div className="stat-box">
-            <span>Accepted Jobs</span>
+            <span>{t(lang, "acceptedJobs")}</span>
             <b>{stats.acceptedJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Active Jobs</span>
+            <span>{t(lang, "activeJobs")}</span>
             <b>{stats.activeJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Completed</span>
+            <span>{t(lang, "completedJobs")}</span>
             <b>{stats.completedJobs}</b>
           </div>
 
           <div className="stat-box">
-            <span>Cancelled</span>
+            <span>{t(lang, "cancelledJobs")}</span>
             <b>{stats.cancelledJobs}</b>
           </div>
 
           <div className="stat-box earnings">
-            <span>Total Earnings</span>
+            <span>{t(lang, "totalEarnings")}</span>
             <b>₹{stats.totalEarnings}</b>
           </div>
         </div>
 
         {/* ✅ REFRESH */}
-        <button onClick={fetchData}>🔄 Refresh</button>
+        <button onClick={fetchData}>🔄 {t(lang, "refresh")}</button>
 
         {/* ✅ ACTIVE JOBS PREVIEW */}
         <div className="jobs-section">
-          <h3>Latest Active Jobs</h3>
-
+          <h3>{t(lang, "latestActiveJobs")}</h3>
           {jobs.length === 0 ? (
             <div className="empty-card">
-              <button onClick={() => navigate("/jobs")}>Find Jobs</button>
+              <button onClick={() => navigate("/jobs")}>
+                {t(lang, "findJobs")}
+              </button>
             </div>
           ) : (
             jobs.map((job) => (

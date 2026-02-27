@@ -2,12 +2,13 @@ import React, { useRef, useState } from "react";
 import FormCard from "../components/FormCard";
 import { ensureMobileFocus } from "../utils/mobileFocus";
 import { t } from "../utils/i18n";
-
+import { useLanguage } from "../hooks/useLanguage";
 import api from "../utils/api";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-export default function Login({ lang }) {
+export default function Login() {
+  const { lang } = useLanguage();
   const formRef = useRef(null);
 
   const [form, setForm] = useState({
@@ -47,7 +48,7 @@ export default function Login({ lang }) {
       navigate("/home");
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.response?.data?.message || t(lang, "loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -74,11 +75,10 @@ export default function Login({ lang }) {
           {/* ✅ REUSED OTP ROW → PASSWORD ROW */}
 
           <label className="field">
-            <span className="label-text">Password</span>
-
+            <span className="label-text">{t(lang, "password")}</span>
             <input
               type="password"
-              placeholder="Enter Password"
+              placeholder={t(lang, "enterPassword")}
               onFocus={ensureMobileFocus}
               className="input"
               value={form.password}
@@ -87,7 +87,7 @@ export default function Login({ lang }) {
           </label>
 
           <button className="submit-btn" type="submit" disabled={loading}>
-            {loading ? "Logging in..." : t(lang, "login")}
+            {loading ? t(lang, "loggingIn") : t(lang, "login")}{" "}
           </button>
         </form>
 

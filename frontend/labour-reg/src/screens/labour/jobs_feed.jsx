@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function JobsFeed() {
+  const { lang } = useLanguage();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +25,7 @@ export default function JobsFeed() {
       setJobs(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load jobs");
+      setError(t(lang, "jobsLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -36,7 +39,7 @@ export default function JobsFeed() {
 
       setJobs(jobs.filter((job) => job._id !== jobId));
     } catch (err) {
-      alert("Accept failed");
+      alert(t(lang, "acceptFailed"));
       console.error(err);
     } finally {
       setProcessingId(null);
@@ -51,7 +54,7 @@ export default function JobsFeed() {
 
       setJobs(jobs.filter((job) => job._id !== jobId));
     } catch (err) {
-      alert("Reject failed");
+      alert(t(lang, "rejectFailed"));
       console.error(err);
     } finally {
       setProcessingId(null);
@@ -70,7 +73,7 @@ export default function JobsFeed() {
 
       <div className="top-bar">
         <input
-          placeholder="Search jobs..."
+          placeholder={t(lang, "searchJobs")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -84,11 +87,11 @@ export default function JobsFeed() {
 
       <div className="feed-content">
         {loading ? (
-          <div className="state-card">Loading jobs...</div>
+          <div className="state-card">{t(lang, "loadingJobs")}</div>
         ) : error ? (
           <div className="state-card">{error}</div>
         ) : filteredJobs.length === 0 ? (
-          <div className="state-card">No jobs found</div>
+          <div className="state-card">{t(lang, "noJobsFound")}</div>
         ) : (
           filteredJobs.map((job) => (
             <div key={job._id} className="job-card">
@@ -97,19 +100,21 @@ export default function JobsFeed() {
               <p className="desc">{job.description}</p>
 
               <p>
-                <b>Skill:</b> {job.skillRequired}
+                <b>{t(lang, "skill")}:</b>
+                {job.skillRequired}
               </p>
 
               <p>
-                <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
+                <b>{t(lang, "stations")}:</b>
+                {job.stationRange.from} → {job.stationRange.to}
               </p>
 
               <p>
-                <b>Budget:</b> ₹{job.budget}
+                <b>{t(lang, "stations")}:</b> ₹{job.budget}
               </p>
 
               <p>
-                <b>Status:</b> {job.status}
+                <b>{t(lang, "budget")}:</b> {t(lang, job.status)}
               </p>
 
               <div className="actions">
@@ -118,7 +123,9 @@ export default function JobsFeed() {
                   disabled={processingId === job._id}
                   onClick={() => handleAccept(job._id)}
                 >
-                  {processingId === job._id ? "Accepting..." : "Accept"}
+                  {processingId === job._id
+                    ? t(lang, "accepting")
+                    : t(lang, "accept")}{" "}
                 </button>
 
                 <button
@@ -126,7 +133,9 @@ export default function JobsFeed() {
                   disabled={processingId === job._id}
                   onClick={() => handleReject(job._id)}
                 >
-                  {processingId === job._id ? "Rejecting..." : "Reject"}
+                  {processingId === job._id
+                    ? t(lang, "rejecting")
+                    : t(lang, "reject")}{" "}
                 </button>
               </div>
             </div>

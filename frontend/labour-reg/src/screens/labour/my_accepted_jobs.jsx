@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { useLanguage } from "../../hooks/useLanguage";
+import { t } from "../../utils/i18n";
 
 export default function MyAcceptedJobs() {
+  const { lang } = useLanguage();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +34,7 @@ export default function MyAcceptedJobs() {
       setJobs(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to load accepted jobs");
+      setError(t(lang, "acceptedJobsLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -48,7 +51,7 @@ export default function MyAcceptedJobs() {
       setJobs((prev) => prev.filter((job) => job._id !== jobId));
     } catch (err) {
       console.error(err);
-      alert("Completion failed");
+      alert(t(lang, "completionFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -67,7 +70,7 @@ export default function MyAcceptedJobs() {
       setJobs(jobs.filter((job) => job._id !== jobId));
     } catch (err) {
       console.error(err);
-      alert("Cancellation failed");
+      alert(t(lang, "cancellationFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -80,7 +83,7 @@ export default function MyAcceptedJobs() {
       const reason = disputeText[jobId];
 
       if (!reason || reason.length < 10) {
-        alert("Reason too short");
+        alert(t(lang, "disputeReasonLength"));
         return;
       }
 
@@ -97,12 +100,11 @@ export default function MyAcceptedJobs() {
 
       await api.post("/disputes", formData);
 
-      alert("Dispute raised");
-
+      alert(t(lang, "disputeRaised"));
       fetchJobs();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Dispute failed");
+      alert(err.response?.data?.message || t(lang, "disputeFailed"));
       console.log("FULL ERROR:", err.response?.data);
     } finally {
       setActionLoading(null);
@@ -119,7 +121,7 @@ export default function MyAcceptedJobs() {
 
   // ---------------- STATES ----------------
 
-  if (loading) return <div className="state">Loading jobs...</div>;
+  if (loading) return <div className="state">{t(lang, "loadingJobs")}</div>;
 
   if (error) return <div className="state">{error}</div>;
 
@@ -130,7 +132,7 @@ export default function MyAcceptedJobs() {
       {/* ✅ TOP BAR 🔥 */}
       <div className="top-bar">
         <input
-          placeholder="Search jobs..."
+          placeholder={t(lang, "searchJobs")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -142,31 +144,33 @@ export default function MyAcceptedJobs() {
 
       {/* ✅ EMPTY STATE CARD 🔥 */}
       {filteredJobs.length === 0 ? (
-        <div className="job-card empty">No jobs found</div>
+        <div className="job-card empty">{t(lang, "noJobsFound")}</div>
       ) : (
         filteredJobs.map((job) => (
           <div key={job._id} className="job-card">
             <div className="job-header">
               <h3>{job.title}</h3>
-              <span className="status">{job.status}</span>
+              <span className="status">{t(lang, job.status)}</span>
             </div>
 
             <p className="desc">{job.description}</p>
 
             <div className="meta">
               <div>
-                <b>Skill:</b> {job.skillRequired}
+                <b>{t(lang, "skill")}:</b>
+                {t(lang, job.skillRequired)}
               </div>
               <div>
-                <b>Stations:</b> {job.stationRange.from} → {job.stationRange.to}
+                <b>{t(lang, "stations")}:</b>
+                {job.stationRange.from} → {job.stationRange.to}
               </div>
               <div>
-                <b>Budget:</b> ₹{job.budget}
+                <b>{t(lang, "budget")}:</b> ₹{job.budget}
               </div>
             </div>
 
             <textarea
-              placeholder="Enter dispute reason..."
+              placeholder={t(lang, "enterDisputeReason")}
               value={disputeText[job._id] || ""}
               onChange={(e) => updateDisputeText(job._id, e.target.value)}
               className="dispute-input"
@@ -183,7 +187,9 @@ export default function MyAcceptedJobs() {
                 onClick={() => handleComplete(job._id)}
                 disabled={actionLoading === job._id}
               >
-                {actionLoading === job._id ? "Processing..." : "Complete"}
+                {actionLoading === job._id
+                  ? t(lang, "processing")
+                  : t(lang, "complete")}{" "}
               </button>
 
               <button
@@ -191,7 +197,7 @@ export default function MyAcceptedJobs() {
                 onClick={() => handleCancel(job._id)}
                 disabled={actionLoading === job._id}
               >
-                Cancel
+                {t(lang, "cancel")}
               </button>
 
               {(job.status === "assigned" || job.status === "completed") && (
@@ -200,7 +206,7 @@ export default function MyAcceptedJobs() {
                   onClick={() => handleDispute(job._id)}
                   disabled={actionLoading === job._id}
                 >
-                  Dispute
+                  {t(lang, "dispute")}
                 </button>
               )}
             </div>

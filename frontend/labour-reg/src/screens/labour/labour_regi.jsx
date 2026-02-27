@@ -4,25 +4,27 @@ import { ensureMobileFocus } from "../../utils/mobileFocus";
 import { useNavigate } from "react-router-dom";
 import { t } from "../../utils/i18n";
 import api from "../../utils/api";
+import { useLanguage } from "../../hooks/useLanguage";
 
 const COMMON_SKILLS = [
-  "Plumbing",
-  "Electrician",
-  "Carpenter",
-  "Painter",
-  "Cleaning",
-  "AC Repair",
-  "Welder",
-  "Mechanic",
-  "Driver",
-  "Helper",
+  "plumbing",
+  "electrician",
+  "carpenter",
+  "painter",
+  "cleaning",
+  "acRepair",
+  "welder",
+  "mechanic",
+  "driver",
+  "helper",
 ];
 
 const STATIONS = ["Vasai", "Nalasopara", "Virar"];
 
-export default function LabourRegi({ lang }) {
+export default function LabourRegi() {
   const formRef = useRef(null);
   const navigate = useNavigate();
+  const { lang } = useLanguage();
 
   const [form, setForm] = useState({
     name: "",
@@ -76,11 +78,12 @@ export default function LabourRegi({ lang }) {
     if (age < 18) return alert(t(lang, "ageRestriction"));
 
     if (!name.trim()) return alert(t(lang, "nameRequired"));
-    if (!password.trim()) return alert("Password required");
+    if (!password.trim()) return alert(t(lang, "passwordRequired"));
 
-    if (!stationFrom || !stationTo) return alert("Select station range");
+    if (!stationFrom || !stationTo)
+      return alert(t(lang, "stationRangeRequired"));
 
-    if (skills.length === 0) return alert("Select at least one skill");
+    if (skills.length === 0) return alert(t(lang, "atLeastOneSkill"));
 
     try {
       setLoading(true);
@@ -99,7 +102,7 @@ export default function LabourRegi({ lang }) {
       navigate("/login");
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Registration failed");
+      alert(err.response?.data?.message || t(lang, "registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -139,7 +142,8 @@ export default function LabourRegi({ lang }) {
 
           <div className="row">
             <label className="field">
-              <span className="label-text">Station From</span>
+              <span className="label-text">{t(lang, "fromStation")}</span>
+
               <select
                 value={form.stationFrom}
                 onChange={(e) =>
@@ -147,7 +151,7 @@ export default function LabourRegi({ lang }) {
                 }
                 className="input"
               >
-                <option value="">Select</option>
+                <option value="">{t(lang, "select")}</option>
                 {STATIONS.map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -155,7 +159,7 @@ export default function LabourRegi({ lang }) {
             </label>
 
             <label className="field">
-              <span className="label-text">Station To</span>
+              <span className="label-text">{t(lang, "toStation")}</span>
               <select
                 value={form.stationTo}
                 onChange={(e) =>
@@ -163,7 +167,7 @@ export default function LabourRegi({ lang }) {
                 }
                 className="input"
               >
-                <option value="">Select</option>
+                <option value="">{t(lang, "select")}</option>
                 {STATIONS.map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -174,19 +178,18 @@ export default function LabourRegi({ lang }) {
           {/* ✅ SKILL SELECTOR 🔥 */}
 
           <label className="field">
-            <span className="label-text">Skills</span>
-
+            <span className="label-text">{t(lang, "skills")}</span>
             <div className="skills-box">
               {skills.map((skill) => (
                 <div key={skill} className="skill-tag">
-                  {skill}
+                  {t(lang, skill)}
                   <span onClick={() => removeSkill(skill)}>✕</span>
                 </div>
               ))}
 
               <input
                 type="text"
-                placeholder="Search skills..."
+                placeholder={t(lang, "searchSkill")}
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 className="skill-input"
@@ -201,7 +204,7 @@ export default function LabourRegi({ lang }) {
                     onClick={() => addSkill(skill)}
                     className="dropdown-item"
                   >
-                    {skill}
+                    {t(lang, skill)}
                   </div>
                 ))}
               </div>
@@ -209,10 +212,11 @@ export default function LabourRegi({ lang }) {
           </label>
 
           <label className="field">
-            <span className="label-text">Password</span>
+            <span className="label-text">{t(lang, "password")}</span>
+
             <input
               type="password"
-              placeholder="Enter Password"
+              placeholder={t(lang, "enterPassword")}
               onFocus={ensureMobileFocus}
               required
               className="input"
@@ -234,7 +238,7 @@ export default function LabourRegi({ lang }) {
           </label>
 
           <button className="submit-btn" type="submit" disabled={loading}>
-            {loading ? "Registering..." : t(lang, "register")}
+            {loading ? t(lang, "registering") : t(lang, "register")}
           </button>
         </form>
 

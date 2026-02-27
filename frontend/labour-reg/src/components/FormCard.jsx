@@ -10,7 +10,7 @@ export default function FormCard({ title, subtitle, children, logintitle }) {
         {children}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .card {
           width: 95%;
           max-width: 480px;

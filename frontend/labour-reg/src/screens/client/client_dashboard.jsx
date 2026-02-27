@@ -85,7 +85,7 @@ export default function ClientDashboard() {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
   .dash-root {
     min-height: 100vh;
     display: flex;
