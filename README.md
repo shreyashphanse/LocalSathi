@@ -176,6 +176,20 @@ Disputed
 
 ---
 
+## 🌍 Multilingual Support (i18n)
+
+This project supports multiple languages using a custom React Context-based implementation.
+
+Supported Languages
+
+> English (en)
+
+> Marathi (mr)
+
+> Hindi (hi)
+
+---
+
 ## 📷 Media Handling
 
 ✔ Profile photo uploads  
