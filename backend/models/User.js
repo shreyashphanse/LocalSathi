@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      match: [/^[6-9]\d{9}$/, "Invalid phone number format"],
     },
 
     email: {

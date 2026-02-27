@@ -12,7 +12,11 @@ const generateToken = (id) => {
 export const registerClient = async (req, res) => {
   try {
     const { name, phone, email, password } = req.body;
+    const phoneRegex = /^[6-9]\d{9}$/;
 
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: "Invalid phone number" });
+    }
     if (!name || !phone || !email || !password) {
       return res.status(400).json({ message: "Missing fields" });
     }
@@ -57,6 +61,11 @@ export const registerLabour = async (req, res) => {
       expectedRate,
       dob, // ✅ Optional but recommended
     } = req.body;
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: "Invalid phone number" });
+    }
 
     /* ✅ HARD VALIDATION */
     const VALID_STATIONS = ["Vasai", "Nalasopara", "Virar"];
@@ -121,7 +130,11 @@ export const registerLabour = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { phone, password } = req.body;
+    const phoneRegex = /^[6-9]\d{9}$/;
 
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: "Invalid phone number" });
+    }
     if (!phone || !password) {
       return res.status(400).json({ message: "Missing credentials" });
     }

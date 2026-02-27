@@ -89,6 +89,16 @@ export default function Login() {
           <button className="submit-btn" type="submit" disabled={loading}>
             {loading ? t(lang, "loggingIn") : t(lang, "login")}{" "}
           </button>
+          <div className="register-redirect">
+            <span>Don’t have an account?</span>
+            <button
+              type="button"
+              className="register-link"
+              onClick={() => navigate("/")}
+            >
+              Register here
+            </button>
+          </div>
         </form>
 
         <style>{`
@@ -127,19 +137,38 @@ export default function Login() {
           }
 
           .input {
-  height: 44px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--g-border);
-  background: var(--g-input-bg);
-  font-size: 15px;
-  outline: none;
+            height: 44px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--g-border);
+            background: var(--g-input-bg);
+            font-size: 15px;
+            outline: none;
 
-  width: 100%;          /* ✅ CRITICAL FIX */
-  box-sizing: border-box; /* ✅ Prevent padding overflow */
-}
+            width: 100%; /* ✅ CRITICAL FIX */
+            box-sizing: border-box; /* ✅ Prevent padding overflow */
+          }
 
+          .register-redirect {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--g-muted);
+          }
 
+          .register-link {
+            background: none;
+            border: none;
+            color: var(--g-accent-strong);
+            font-weight: 600;
+            cursor: pointer;
+          }
+
+          .register-link:hover {
+            text-decoration: underline;
+          }
 
           .submit-btn {
             height: 46px;

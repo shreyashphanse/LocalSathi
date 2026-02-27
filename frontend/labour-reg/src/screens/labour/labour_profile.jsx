@@ -420,6 +420,8 @@ export default function LabourProfileTop() {
 
       await api.patch("/users/profile", formData);
 
+      await fetchProfile(); // 🔥 THIS FIXES EVERYTHING
+
       setEditing(false);
       alert(t(lang, "profileUpdated"));
     } catch (err) {
@@ -461,7 +463,7 @@ export default function LabourProfileTop() {
 
         <div className="actions">
           <button
-            className={`btn ${editing ? "Save" : "Edit"}`}
+            className={`btn ${editing ? "save" : "edit"}`}
             onClick={() => {
               if (editing) handleSave();
               else {

@@ -60,6 +60,13 @@ export default function LabourRegi() {
     const { name, phone, password, dob, stationFrom, stationTo } = form;
 
     if (!phone.trim()) return alert(t(lang, "phoneRequired"));
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    if (!phoneRegex.test(phone)) {
+      alert(t(lang, "enterValidPhone"));
+      return;
+    }
     if (!dob) return alert(t(lang, "dobRequired"));
 
     const birthDate = new Date(dob);

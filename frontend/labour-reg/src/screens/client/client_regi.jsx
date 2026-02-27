@@ -59,6 +59,12 @@ export default function ClientRegi() {
       alert(t(lang, "phoneRequired"));
       return;
     }
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    if (!phoneRegex.test(phone)) {
+      alert(t(lang, "enterValidPhone"));
+      return;
+    }
 
     if (!email.trim()) {
       alert(t(lang, "emailRequired"));
