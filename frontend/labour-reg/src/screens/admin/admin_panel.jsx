@@ -291,8 +291,8 @@ confirmModal = {
             style={styles.input}
           >
             <option value="all">All Roles</option>
-            <option value="provider">Providers</option>
-            <option value="customer">Customers</option>
+            <option value="labour">Providers</option>
+            <option value="client">Customers</option>
           </select>
 
           <select
