@@ -362,7 +362,8 @@ export default function LabourProfileTop() {
     setReliabilityScore(data.reliabilityScore || 50);
 
     if (data.profilePhoto) {
-      setProfilePhotoPreview(`http://localhost:5000${data.profilePhoto}`);
+      const backendBase = import.meta.env.VITE_API_URL.replace("/api", "");
+      setProfilePhotoPreview(`${backendBase}${data.profilePhoto}`);
     }
   };
 
