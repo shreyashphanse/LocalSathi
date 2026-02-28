@@ -5,6 +5,7 @@ import { t } from "../../utils/i18n";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
+import DefaultProfile from "../../assets/default_profile.png";
 
 const styles = `
   :root {
@@ -302,10 +303,9 @@ export default function ClientProfileTop() {
   const [verificationStatus, setVerificationStatus] = useState("");
 
   const fileInputRef = useRef(null);
-  const PLACEHOLDER = "/src/assets/default_profile.png";
-
   const [profilePhotoFile, setProfilePhotoFile] = useState(null);
-  const [profilePhotoPreview, setProfilePhotoPreview] = useState(PLACEHOLDER);
+  const [profilePhotoPreview, setProfilePhotoPreview] =
+    useState(DefaultProfile);
 
   useEffect(() => {
     fetchProfile();
