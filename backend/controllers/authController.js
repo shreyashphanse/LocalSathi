@@ -11,7 +11,7 @@ const generateToken = (id) => {
 // ✅ CLIENT REGISTER
 export const registerClient = async (req, res) => {
   try {
-    const { name, phone, email, password } = req.body;
+    const { name, phone, email, password, dob } = req.body;
     const phoneRegex = /^[6-9]\d{9}$/;
 
     if (!phoneRegex.test(phone)) {
@@ -35,6 +35,7 @@ export const registerClient = async (req, res) => {
       email,
       password: hashedPassword,
       role: "client",
+      dob,
     });
 
     res.json({
