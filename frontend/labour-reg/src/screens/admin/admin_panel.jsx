@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import api from "api";
+import api from "../../utils/api";
 import { t } from "../../utils/i18n";
 
 export default function AdminPanel({ lang }) {
@@ -69,7 +70,8 @@ confirmModal = {
     );
 
     try {
-      await axios.patch(`/api/admin/users/${id}/verification`, { action });
+      // await api.patch(`/api/admin/users/${id}/verification`, { action });
+      await api.patch(`/admin/users/${id}/verification`, { action });
     } catch (err) {
       console.error(err);
       setUsers(oldUsers);
@@ -77,7 +79,7 @@ confirmModal = {
   };
   // const fetchMetrics = async () => {
   //   try {
-  //     const res = await axios.get("/api/admin/metrics");
+  //     const res = await api.get("/admin/metrics");
   //     setMetrics(res.data);
   //   } catch (err) {
   //     console.error(err);
@@ -93,10 +95,10 @@ confirmModal = {
       setLoading(true);
 
       const [usersRes, jobsRes, disputesRes, metricsRes] = await Promise.all([
-        axios.get("/api/admin/users"),
-        axios.get("/api/admin/jobs"),
-        axios.get("/api/admin/disputes"),
-        axios.get("/api/admin/metrics"),
+        api.get("/admin/users"),
+        api.get("/admin/jobs"),
+        api.get("/admin/disputes"),
+        api.get("/admin/metrics"),
       ]);
 
       setUsers(Array.isArray(usersRes.data) ? usersRes.data : []);
@@ -169,7 +171,7 @@ confirmModal = {
     );
 
     try {
-      await axios.patch(`/api/admin/users/${id}/ban`);
+      await api.patch(`/admin/users/${id}/ban`);
     } catch (err) {
       console.error(err);
       fetchDashboard();
@@ -182,7 +184,7 @@ confirmModal = {
     );
 
     try {
-      await axios.patch(`/api/admin/jobs/${id}/cancel`);
+      await api.patch(`/admin/jobs/${id}/cancel`);
     } catch (err) {
       console.error(err);
       fetchDashboard();
@@ -195,7 +197,7 @@ confirmModal = {
     setJobs((prev) => prev.filter((j) => j._id !== id));
 
     try {
-      await axios.delete(`/api/admin/jobs/${id}`);
+      await api.delete(`/admin/jobs/${id}`);
     } catch (err) {
       console.error(err);
       setJobs(oldJobs);
@@ -206,7 +208,7 @@ confirmModal = {
     try {
       const note = prompt("Resolution note:");
 
-      await axios.patch(`/api/admin/disputes/${id}/resolve`, {
+      await api.patch(`/admin/disputes/${id}/resolve`, {
         adminNote: note,
         decisionAgainst,
       });
@@ -221,7 +223,7 @@ confirmModal = {
     try {
       const note = prompt("Rejection reason:");
 
-      await axios.patch(`/api/admin/disputes/${id}/reject`, {
+      await api.patch(`/admin/disputes/${id}/reject`, {
         adminNote: note,
       });
 
