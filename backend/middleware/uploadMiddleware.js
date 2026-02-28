@@ -1,17 +1,28 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+
+const ensureDir = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+};
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    let uploadPath = "uploads/misc";
+
     if (file.fieldname === "profilePhoto") {
-      cb(null, "uploads/profiles");
+      uploadPath = "uploads/profiles";
     } else if (file.fieldname === "evidence") {
-      cb(null, "uploads/disputes");
+      uploadPath = "uploads/disputes";
     } else if (file.fieldname === "paymentProof") {
-      cb(null, "uploads/payments");
-    } else {
-      cb(null, "uploads/misc");
+      uploadPath = "uploads/payments";
     }
+
+    ensureDir(uploadPath); // 🔥 THIS CREATES FOLDER IF MISSING
+
+    cb(null, uploadPath);
   },
 
   filename: function (req, file, cb) {
