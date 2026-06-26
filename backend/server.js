@@ -13,6 +13,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import disputeRoutes from "./routes/disputeRoutes.js";
 import Payment from "./models/Payment.js";
 import User from "./models/User.js";
+import healthRoute from "./routes/healthRoute.js";
 
 dotenv.config();
 connectDB();
@@ -35,6 +36,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/disputes", disputeRoutes);
+app.use("/health", healthRoute);
 app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 5000;
